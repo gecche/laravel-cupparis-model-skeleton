@@ -55,7 +55,7 @@
 
     <script>
 
-        $(function () {
+        jQuery(function () {
         });
 
     </script>

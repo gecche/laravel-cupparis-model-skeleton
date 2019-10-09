@@ -1,27 +1,25 @@
 <?php namespace Gecche\Cupparis\ModelSkeleton\Controllers;
 
+use Gecche\Cupparis\ModelSkeleton\Services\Migration;
 use Gecche\DBHelper\Facades\DBHelper;
 use Illuminate\Routing\Controller;
 use App\Models\Role;
 use Cupparis\Form\ModelDBMethods;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 //use Illuminate\Support\Facades\Config;
 //use Illuminate\Support\Facades\Response;
 //use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 //use Laracasts\Flash\Flash;
 
 class ModelSkeletonController extends Controller
 {
 
-    protected $modelsConfsParams = [
-        'templatePathJs' => '/js/',
-        'single' => false,
-        'singleModelsConfsFile' => 'ModelsConfs.js',
-        'subModelsConfsPath' => 'ModelsConfs/',
-    ];
+    protected $skeletonConfig = null;
 
     /**
      * SuperuserController constructor.
@@ -29,6 +27,11 @@ class ModelSkeletonController extends Controller
     public function __construct(Request $request)
     {
         ini_set('max_input_vars', 10000);
+
+
+        $this->skeletonConfig = Config::get('cupparis-model-skeleton');
+
+
     }
 
 
@@ -52,7 +55,7 @@ class ModelSkeletonController extends Controller
     {
 
         $user = Auth::user();
-        $modelDbMethods = DBHelper::helper($user->getConnection());
+        $modelDbMethods = DBHelper::helper($user->getConnection()->getName());
 
         $post = Input::all();
 
@@ -203,7 +206,7 @@ class ModelSkeletonController extends Controller
         $modelsConfsValues = $this->setModelsConfsValues($post);
 
 
-        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+        $migrationService = new Migration($migrationValues, $modelValues, $modelsConfsValues);
 
         $migrationService->saveMigration();
 
@@ -215,7 +218,7 @@ class ModelSkeletonController extends Controller
             $migrationService->saveModelConf();
         }
 
-        Flash::success('migrazione eseguita con successo (con modelsconfs)');
+//        Flash::success('migrazione eseguita con successo (con modelsconfs)');
         return view('modelskeleton::migrations', compact([]));
 
     }
@@ -234,7 +237,7 @@ class ModelSkeletonController extends Controller
 
         $post = Input::all();
         $modelName = studly_case(array_get($post, 'nome_modello', ''));
-        $fullModelName = $this->models_namespace . $modelName;
+        $fullModelName = Arr::get($this->skeletonConfig,'models_namespace','App\\') . $modelName;
         $model = new $fullModelName;
 
 
@@ -256,7 +259,7 @@ class ModelSkeletonController extends Controller
             $modelValues['relation_names'][] = $relationKey;
             $modelValues['relation_types'][] = strtoupper(snake_case($relationValue[0]));
 
-            $relationModel = substr($relationValue[1], strlen($this->models_namespace) - 1);
+            $relationModel = substr($relationValue[1], strlen(Arr::get($this->skeletonConfig,'models_namespace','App\\')) - 1);
             $modelValues['relation_models'][] = snake_case($relationModel);
         }
 
@@ -606,7 +609,7 @@ class ModelSkeletonController extends Controller
 
     protected function _getModelsConfsFile($modelValues = []) {
 
-        $modelsConfsParams = $this->modelsConfsParams;
+        $modelsConfsParams = Arr::get($this->skeletonConfig,'modelsconf',[]);
 
 
 
@@ -950,7 +953,7 @@ class ModelSkeletonController extends Controller
                 $name = $file->getRelativePathName();
                 $model = substr($name, 0, -4);
 
-                if (!class_exists($this->models_namespace . $model)) {
+                if (!class_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
                     continue;
                 }
                 if ($this->_includeModelPermissions($model)) {
@@ -965,7 +968,7 @@ class ModelSkeletonController extends Controller
 
     protected function _includeModelPermissions($model)
     {
-        if (!class_exists($this->models_namespace . $model)) {
+        if (!class_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
             return false;
         }
 
@@ -1008,10 +1011,10 @@ class ModelSkeletonController extends Controller
                 $name = $file->getRelativePathName();
                 $model = substr($name, 0, -4);
 
-                if (class_exists($this->models_namespace . $model)) {
+                if (class_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
                     $models[] = snake_case($model);
                 }
-                if (trait_exists($this->models_namespace . $model)) {
+                if (trait_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
                     $traits[] = snake_case($model);
                 }
             }

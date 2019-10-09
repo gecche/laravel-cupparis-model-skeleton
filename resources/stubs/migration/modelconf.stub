@@ -1,0 +1,62 @@
+
+var Model_{{$modelClass}} = {
+    search: ConfSearch.extend({
+        fields: [
+{{$searchFields}}
+        ],
+        operator: {
+{{$searchOperators}}
+        },
+        fields_config: {
+{{$searchFieldsType}}
+        },
+        // groups: {
+        //     'g0': {
+        //         fields: [
+        //
+        //         ],
+        //     },
+        //     'g1': {
+        //         fields: [
+        //
+        //         ],
+        //     }
+        // },
+
+    }),
+    list: ConfList.extend({
+        actions : [
+            'ActionView',
+            'ActionEdit',
+            'ActionDelete',
+            'ActionMultiDelete',
+        ],
+        routeName : null,
+        dataTableSearchSelect : [
+{{$searchFields}}
+        ],
+        fields: [
+{{$listFields}}
+        ],
+        fields_config: {
+{{$listFieldsType}}
+        },
+        'order_fields' : {
+{{$listOrderFields}}
+        },
+        init: function () {
+
+        }
+    }),
+    edit: ConfEdit.extend({
+        fields: [
+{{$editFields}}
+        ],
+        fields_config: {
+{{$editFieldsType}}
+        },
+        init: function () {
+
+        }
+    }),
+}

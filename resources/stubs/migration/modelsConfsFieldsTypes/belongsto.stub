@@ -1,0 +1,7 @@
+                type : "belongsto",
+                item_view_template : null,
+                fields : [
+
+                ],
+                mode : "view",
+                htmlAttributes: {},

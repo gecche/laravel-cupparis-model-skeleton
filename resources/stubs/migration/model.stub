@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models;
+
+use Cupparis\Ardent\Ardent;
+
+/**
+ * Eloquent model for {{$migrationTable}} table.
+ */
+class {{$modelClass}} extends Ardent
+{
+
+    {{$traits}}
+//    use ModelUploadsTrait;
+
+    protected $table = '{{$migrationTable}}';
+
+    //protected $fillable = [];
+
+    public $timestamps = {{$timestamps}};
+    public $ownerships = {{$ownerships}};
+
+    public $appends = [];
+
+    public $fieldParams = [
+//        'qualifiche|id' => [
+//
+//        ],
+    ];
+
+    public static $relationsData = [
+
+{{$relationsData}}
+
+//        'belongsto' => array(self::BELONGS_TO, 'App\Models\<MODELNAME>', 'foreignKey' => '<FOREIGNKEYNAME>'),
+//        'belongstomany' => array(self::BELONGS_TO_MANY, 'App\Models\<MODELNAME>', 'table' => '<TABLEPIVOTNAME>','pivotKeys' => [],'foreignKey' => '<FOREIGNKEYNAME>','otherKey' => '<OTHERKEYNAME>') ,
+//        'hasmany' => array(self::HAS_MANY, 'App\Models\<MODELNAME>', 'table' => '<TABLENAME>','foreignKey' => '<FOREIGNKEYNAME>'),
+    ];
+
+    public $columnsForSelectList = [{{$columnsForSelectList}}];
+     //['id','descrizione'];
+
+    public $defaultOrderColumns = [{{$defaultOrderColumns}}];
+     //['cognome' => 'ASC','nome' => 'ASC'];
+
+    public $columnsSearchAutoComplete = [{{$columnsSearchAutoComplete}}];
+     //['cognome','denominazione','codicefiscale','partitaiva'];
+
+}

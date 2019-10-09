@@ -1,0 +1,7 @@
+                type : "select",
+                multiple : false,
+                metadata : {
+                    domainValuesOrder : null,
+                    domainValues : null,
+                },
+                htmlAttributes: {},

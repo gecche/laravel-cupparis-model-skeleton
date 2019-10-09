@@ -1,0 +1,13 @@
+                type : "autocomplete",
+                //url : null,
+                metadata : {
+                    model_description : [],
+                    separator : null,
+                    fields : [],
+                    autocompleteModel : "user",
+                    relationModel : null,
+                    n_items : null,
+                    metodo : null,
+                },
+                modelData : null,
+                htmlAttributes: {},

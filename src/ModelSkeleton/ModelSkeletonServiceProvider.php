@@ -35,6 +35,7 @@ class ModelSkeletonServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../../config/cupparis-model-skeleton.php' => config_path('cupparis-model-skeleton.php'),
+            __DIR__ . '/../../resources/stubs/migration' => base_path('stubs/migration'),
         ], 'public');
 
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');

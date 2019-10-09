@@ -1,0 +1,7 @@
+                type : "swap",
+                classTrue : "text-success",
+                classFalse : "text-danger",
+                title : "Attiva/Disattiva",
+                //domainValues : null,
+                mode : "edit",
+                htmlAttributes: {},

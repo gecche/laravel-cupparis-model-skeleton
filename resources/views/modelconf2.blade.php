@@ -1,4 +1,4 @@
-@extends($layoutView)
+@extends('app')
 @section('content')
 
     {{--@if (isset($post))--}}
@@ -8,7 +8,7 @@
     {{--@endif--}}
 
     <div>
-        <form name="permissions" action="/cupparis/modelskeleton/migration3" method="post">
+        <form name="permissions" action="/cupparis/modelskeleton/modelconf2" method="post">
 
             {{ csrf_field() }}
             <textarea name="migrationValuesJson" class="hide">{!! $migrationValuesJson !!}</textarea>
@@ -21,13 +21,12 @@
                 <button class="btn btn-default" >
                     Salva
                 </button>
-                <a href="/cupparis/modelskeleton/migration" class="btn btn-danger">
+                <a href="/cupparis/modelskeleton/modelconf" class="btn btn-danger">
                     Indietro
                 </a>
             </div>
 
             <br/>
-
 
         </form>
     </div>

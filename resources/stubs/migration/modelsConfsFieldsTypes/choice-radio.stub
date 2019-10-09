@@ -1,0 +1,6 @@
+                type : "radio",
+                metadata : {
+                    domainValuesOrder : null,
+                    domainValues : null,
+                },
+                htmlAttributes: {},

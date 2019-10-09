@@ -11,6 +11,8 @@
     ],
     "require": {
         "laravel/framework": "5.5.*",
+        "gecche/laravel-cupparis-helpers": "v1.1.*",
+        "gecche/laravel-cupparis-translation": "v1.1.x-dev",
         "gecche/laravel-dbhelper": "v1.1.x-dev",
         "gecche/laravel-breeze": "v1.1.x-dev"
     },

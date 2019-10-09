@@ -1,4 +1,4 @@
-@extends('layouts/app')
+@extends($layoutView)
 @section('content')
 
     {{--@if (isset($post))--}}
@@ -8,7 +8,7 @@
     {{--@endif--}}
 
     <div>
-        <form name="permissions" action="/superuser/migration2" method="post">
+        <form name="permissions" action="/cupparis/modelskeleton/migration2" method="post">
             {{ csrf_field() }}
         <div class="col col-sm-12 panel panel-default">
             <div class="panel-heading">
@@ -140,7 +140,7 @@
             </div>
         </div>
 
-            @include('superuser.includes.model')
+            @include('modelskeleton::includes.model')
 
             <div class="col col-sm-12 panel panel-success">
                 <div class="panel-heading">
@@ -163,14 +163,14 @@
                     </table>
                 </div>
             </div>
-            {{--@include('superuser.includes.modelconf', ['campi' => $migration['campi']])--}}
+            {{--@include('modelskeleton::includes.modelconf', ['campi' => $migration['campi']])--}}
 
 
             <div class="col col-sm-12 text-center">
                 <button class="btn btn-default" >
                     Avanti
                 </button>
-                <a href="/superuser/migration" class="btn btn-danger">
+                <a href="/cupparis/modelskeleton/migration" class="btn btn-danger">
                     Indietro
                 </a>
             </div>
@@ -202,7 +202,7 @@
 
     <script>
 
-        $(function () {
+        jQuery(function () {
         });
 
     </script>
