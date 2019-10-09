@@ -1,4 +1,4 @@
-@extends('app')
+@extends($layoutView)
 @section('content')
 
     {{--@if (isset($post))--}}
@@ -70,7 +70,8 @@
 
     <script>
 
-        $(function () {
+        jQuery(function () {
+
         });
 
     </script>

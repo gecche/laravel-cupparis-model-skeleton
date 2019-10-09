@@ -1,5 +1,6 @@
-<?php namespace Gecche\Cupparis\Controllers;
+<?php namespace Gecche\Cupparis\ModelSkeleton\Controllers;
 
+use Gecche\DBHelper\Facades\DBHelper;
 use Illuminate\Routing\Controller;
 use App\Models\Role;
 use Cupparis\Form\ModelDBMethods;
@@ -15,7 +16,6 @@ use Illuminate\Support\Facades\Input;
 class ModelSkeletonController extends Controller
 {
 
-
     protected $modelsConfsParams = [
         'templatePathJs' => '/js/',
         'single' => false,
@@ -28,260 +28,31 @@ class ModelSkeletonController extends Controller
      */
     public function __construct(Request $request)
     {
-        parent::__construct($request);
-
         ini_set('max_input_vars', 10000);
     }
 
 
     public function getIndex() {
-        return view('modelskeleton.index');
+        return view('modelskeleton::index');
     }
 
     public function getMigrations() {
-        return view('modelskeleton.migrations');
+        return view('modelskeleton::migrations');
     }
 
 
-
-    public function getModelconf()
-    {
-
-        $models = $this->_getModels();
-
-        return view('modelskeleton.modelconf', compact(['models']));
-    }
-
-    public function postModelconf()
-    {
-
-        $post = Input::all();
-        $modelName = studly_case(array_get($post, 'nome_modello', ''));
-        $fullModelName = $this->models_namespace . $modelName;
-        $model = new $fullModelName;
-
-
-        $modelDbMethods = new ModelDBMethods($model->getConnection());
-
-
-        $migrationValues['nome_tabella'] = $model->getTable();
-
-        $modelValues = [];
-        $modelValues['nome_modello'] = $modelName;
-
-        $relations = $model->getRelationData();
-
-        $modelValues['relation_names'] = [];
-        $modelValues['relation_types'] = [];
-        $modelValues['relation_models'] = [];
-
-        foreach ($relations as $relationKey => $relationValue) {
-            $modelValues['relation_names'][] = $relationKey;
-            $modelValues['relation_types'][] = strtoupper(snake_case($relationValue[0]));
-
-            $relationModel = substr($relationValue[1], strlen($this->models_namespace) - 1);
-            $modelValues['relation_models'][] = snake_case($relationModel);
-        }
-
-
-        $fieldsDatatypes = $modelDbMethods->listColumnsMigrationDatatypes($migrationValues['nome_tabella']);
-
-        foreach ($fieldsDatatypes as $fieldKey => $fieldValue) {
-            if (in_array($fieldKey, ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'])) {
-                unset($fieldsDatatypes[$fieldKey]);
-                continue;
-            }
-
-            $fieldsDatatypes[$fieldKey]['nome'] = $fieldKey;
-        }
-
-        $migrationValues['campi'] = $fieldsDatatypes;
-
-        $migrationValuesJson = cupparis_json_encode($migrationValues);
-        $modelValuesJson = cupparis_json_encode($modelValues);
-
-        $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
-
-        $migration = $migrationValues;
-        $model = $modelValues;
-
-//        echo '<pre>';
-//        print_r($modelsConfs);
-//        echo '</pre>';
-
-        return view('modelskeleton.modelconf2', compact([
-            'migration', 'model', 'modelsConfs',
-            'migrationValuesJson', 'modelValuesJson',
-        ]));
-    }
-
-    public function postModelconf2()
-    {
-
-        $post = Input::all();
-
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
-        $migrationValues = json_decode($migrationValuesJson, true);
-        $modelValuesJson = array_get($post, 'modelValuesJson', null);
-        $modelValues = json_decode($modelValuesJson, true);
-
-        $modelsConfsValues = $this->setModelsConfsValues($post);
-
-        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
-
-        $migrationService->saveModelConf();
-
-        Flash::success('migrazione model conf eseguita con successo');
-        return view('modelskeleton.migrations', compact([]));
-
-    }
-
-
-    public function getModel()
-    {
-
-        $user = Auth::user();
-
-        $modelDbMethods = new ModelDBMethods($user->getConnection());
-
-        $tables = $modelDbMethods->listTables();
-
-        $model = [];
-
-        $model['options']['tables'] = $tables;
-
-        return view('modelskeleton.model', compact(['model']));
-    }
-
-    public function postModel()
-    {
-
-        $user = Auth::user();
-        $modelDbMethods = new ModelDBMethods($user->getConnection());
-
-        $post = Input::all();
-        $migration['nome_tabella'] = array_get($post, 'nome_tabella', '');
-
-        $tables = $modelDbMethods->listTables();
-        $fieldsDatatypes = $modelDbMethods->listColumnsMigrationDatatypes($migration['nome_tabella']);
-
-        foreach ($fieldsDatatypes as $fieldKey => $fieldValue) {
-            if (in_array($fieldKey, ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'])) {
-                unset($fieldsDatatypes[$fieldKey]);
-                continue;
-            }
-
-            $fieldsDatatypes[$fieldKey]['nome'] = $fieldKey;
-        }
-
-        $migration['campi'] = $fieldsDatatypes;
-
-
-        $model = $this->_getModelInfo($migration['nome_tabella'], $migration['campi']);
-        $model['options']['tables'] = ["" => " "] + $tables;
-
-        $modelsConfs['options']['crea_modelsconfs'] = [
-            'si' => 'Sì',
-            'no' => 'No',
-        ];
-
-        $migrationValuesJson = cupparis_json_encode($migration);
-
-        return view('modelskeleton.model2', compact([
-            'migration', 'model', 'modelsConfs',
-            'migrationValuesJson',
-        ]));
-    }
-
-
-    public function postModel2()
-    {
-
-
-        $post = Input::all();
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
-        $migrationValues = json_decode($migrationValuesJson, true);
-
-
-        $post['crea_modello'] = 'si';
-        $modelValues = $this->setModelValues($post);
-
-        $modelsConfsValues = false;
-
-        if (array_get($post, 'crea_modelsconfs', 'no') == 'si') {
-
-            $modelsConfsValues = true;
-
-        }
-
-
-        if (!$modelsConfsValues) {
-
-            $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
-
-
-            $migrationService->saveModel();
-
-            Flash::success('migrazione modello eseguita con successo (senza modelsconfs)');
-            return view('modelskeleton.migrations', compact([]));
-
-        } else {
-
-            $migrationValuesJson = cupparis_json_encode($migrationValues);
-            $modelValuesJson = cupparis_json_encode($modelValues);
-
-            $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
-
-            $migation = $migrationValues;
-            $model = $modelValues;
-
-            Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
-            return view('modelskeleton.model3', compact([
-                'migration', 'model', 'modelsConfs',
-                'migrationValuesJson', 'modelValuesJson',
-            ]));
-        }
-    }
-
-    public function postModel3()
-    {
-
-        $post = Input::all();
-
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
-        $migrationValues = json_decode($migrationValuesJson, true);
-        $modelValuesJson = array_get($post, 'modelValuesJson', null);
-        $modelValues = json_decode($modelValuesJson, true);
-
-        $modelsConfsValues = $this->setModelsConfsValues($post);
-
-
-        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
-
-        $migrationService->saveModel();
-
-        if ($modelsConfsValues) {
-            $migrationService->saveModelConf();
-        }
-
-
-        Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
-        return view('modelskeleton.migrations', compact([]));
-
-    }
 
 
     public function getMigration()
     {
-        return view('modelskeleton.migration');
+        return view('modelskeleton::migration');
     }
 
     public function postMigration()
     {
 
         $user = Auth::user();
-        $modelDbMethods = new ModelDBMethods($user->getConnection());
-
+        $modelDbMethods = DBHelper::helper($user->getConnection());
 
         $post = Input::all();
 
@@ -362,7 +133,7 @@ class ModelSkeletonController extends Controller
 //        $modelsConfs = $this->_getModelsConfsInfo();
 
 
-        return view('modelskeleton.migration2', compact(['migration', 'model', 'modelsConfs']));
+        return view('modelskeleton::migration2', compact(['migration', 'model', 'modelsConfs']));
 
     }
 
@@ -399,7 +170,7 @@ class ModelSkeletonController extends Controller
             }
 
             Flash::success('migrazione eseguita con successo (senza modelsconfs)');
-            return view('modelskeleton.migrations', compact([]));
+            return view('modelskeleton::migrations', compact([]));
 
         } else {
 
@@ -411,7 +182,7 @@ class ModelSkeletonController extends Controller
             $migation = $migrationValues;
             $model = $modelValues;
 
-            return view('modelskeleton.migration3', compact([
+            return view('modelskeleton::migration3', compact([
                 'migration', 'model', 'modelsConfs',
                 'migrationValuesJson', 'modelValuesJson',
             ]));
@@ -445,9 +216,237 @@ class ModelSkeletonController extends Controller
         }
 
         Flash::success('migrazione eseguita con successo (con modelsconfs)');
-        return view('modelskeleton.migrations', compact([]));
+        return view('modelskeleton::migrations', compact([]));
 
     }
+
+
+    public function getModelconf()
+    {
+
+        $models = $this->_getModels();
+
+        return view('modelskeleton::modelconf', compact(['models']));
+    }
+
+    public function postModelconf()
+    {
+
+        $post = Input::all();
+        $modelName = studly_case(array_get($post, 'nome_modello', ''));
+        $fullModelName = $this->models_namespace . $modelName;
+        $model = new $fullModelName;
+
+
+        $modelDbMethods = new ModelDBMethods($model->getConnection());
+
+
+        $migrationValues['nome_tabella'] = $model->getTable();
+
+        $modelValues = [];
+        $modelValues['nome_modello'] = $modelName;
+
+        $relations = $model->getRelationData();
+
+        $modelValues['relation_names'] = [];
+        $modelValues['relation_types'] = [];
+        $modelValues['relation_models'] = [];
+
+        foreach ($relations as $relationKey => $relationValue) {
+            $modelValues['relation_names'][] = $relationKey;
+            $modelValues['relation_types'][] = strtoupper(snake_case($relationValue[0]));
+
+            $relationModel = substr($relationValue[1], strlen($this->models_namespace) - 1);
+            $modelValues['relation_models'][] = snake_case($relationModel);
+        }
+
+
+        $fieldsDatatypes = $modelDbMethods->listColumnsMigrationDatatypes($migrationValues['nome_tabella']);
+
+        foreach ($fieldsDatatypes as $fieldKey => $fieldValue) {
+            if (in_array($fieldKey, ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'])) {
+                unset($fieldsDatatypes[$fieldKey]);
+                continue;
+            }
+
+            $fieldsDatatypes[$fieldKey]['nome'] = $fieldKey;
+        }
+
+        $migrationValues['campi'] = $fieldsDatatypes;
+
+        $migrationValuesJson = cupparis_json_encode($migrationValues);
+        $modelValuesJson = cupparis_json_encode($modelValues);
+
+        $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
+
+        $migration = $migrationValues;
+        $model = $modelValues;
+
+//        echo '<pre>';
+//        print_r($modelsConfs);
+//        echo '</pre>';
+
+        return view('modelskeleton::modelconf2', compact([
+            'migration', 'model', 'modelsConfs',
+            'migrationValuesJson', 'modelValuesJson',
+        ]));
+    }
+
+    public function postModelconf2()
+    {
+
+        $post = Input::all();
+
+        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValues = json_decode($migrationValuesJson, true);
+        $modelValuesJson = array_get($post, 'modelValuesJson', null);
+        $modelValues = json_decode($modelValuesJson, true);
+
+        $modelsConfsValues = $this->setModelsConfsValues($post);
+
+        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+
+        $migrationService->saveModelConf();
+
+        Flash::success('migrazione model conf eseguita con successo');
+        return view('modelskeleton::migrations', compact([]));
+
+    }
+
+
+    public function getModel()
+    {
+
+        $user = Auth::user();
+
+        $modelDbMethods = new ModelDBMethods($user->getConnection());
+
+        $tables = $modelDbMethods->listTables();
+
+        $model = [];
+
+        $model['options']['tables'] = $tables;
+
+        return view('modelskeleton::model', compact(['model']));
+    }
+
+    public function postModel()
+    {
+
+        $user = Auth::user();
+        $modelDbMethods = new ModelDBMethods($user->getConnection());
+
+        $post = Input::all();
+        $migration['nome_tabella'] = array_get($post, 'nome_tabella', '');
+
+        $tables = $modelDbMethods->listTables();
+        $fieldsDatatypes = $modelDbMethods->listColumnsMigrationDatatypes($migration['nome_tabella']);
+
+        foreach ($fieldsDatatypes as $fieldKey => $fieldValue) {
+            if (in_array($fieldKey, ['id', 'created_at', 'updated_at', 'created_by', 'updated_by'])) {
+                unset($fieldsDatatypes[$fieldKey]);
+                continue;
+            }
+
+            $fieldsDatatypes[$fieldKey]['nome'] = $fieldKey;
+        }
+
+        $migration['campi'] = $fieldsDatatypes;
+
+
+        $model = $this->_getModelInfo($migration['nome_tabella'], $migration['campi']);
+        $model['options']['tables'] = ["" => " "] + $tables;
+
+        $modelsConfs['options']['crea_modelsconfs'] = [
+            'si' => 'Sì',
+            'no' => 'No',
+        ];
+
+        $migrationValuesJson = cupparis_json_encode($migration);
+
+        return view('modelskeleton::model2', compact([
+            'migration', 'model', 'modelsConfs',
+            'migrationValuesJson',
+        ]));
+    }
+
+
+    public function postModel2()
+    {
+
+
+        $post = Input::all();
+        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValues = json_decode($migrationValuesJson, true);
+
+
+        $post['crea_modello'] = 'si';
+        $modelValues = $this->setModelValues($post);
+
+        $modelsConfsValues = false;
+
+        if (array_get($post, 'crea_modelsconfs', 'no') == 'si') {
+
+            $modelsConfsValues = true;
+
+        }
+
+
+        if (!$modelsConfsValues) {
+
+            $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+
+
+            $migrationService->saveModel();
+
+            Flash::success('migrazione modello eseguita con successo (senza modelsconfs)');
+            return view('modelskeleton::migrations', compact([]));
+
+        } else {
+
+            $migrationValuesJson = cupparis_json_encode($migrationValues);
+            $modelValuesJson = cupparis_json_encode($modelValues);
+
+            $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
+
+            $migation = $migrationValues;
+            $model = $modelValues;
+
+            Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
+            return view('modelskeleton::model3', compact([
+                'migration', 'model', 'modelsConfs',
+                'migrationValuesJson', 'modelValuesJson',
+            ]));
+        }
+    }
+
+    public function postModel3()
+    {
+
+        $post = Input::all();
+
+        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValues = json_decode($migrationValuesJson, true);
+        $modelValuesJson = array_get($post, 'modelValuesJson', null);
+        $modelValues = json_decode($modelValuesJson, true);
+
+        $modelsConfsValues = $this->setModelsConfsValues($post);
+
+
+        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+
+        $migrationService->saveModel();
+
+        if ($modelsConfsValues) {
+            $migrationService->saveModelConf();
+        }
+
+
+        Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
+        return view('modelskeleton::migrations', compact([]));
+
+    }
+
 
 
     protected function setModelValues($post)
@@ -1028,6 +1027,7 @@ class ModelSkeletonController extends Controller
     {
 
     }
+
 
 
 }

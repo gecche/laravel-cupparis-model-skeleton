@@ -6,6 +6,8 @@ use Gecche\AclGate\Auth\Access\Gate;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class ModelSkeletonServiceProvider extends ServiceProvider
@@ -31,10 +33,19 @@ class ModelSkeletonServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        $this->publishes([
+            __DIR__ . '/../../config/cupparis-model-skeleton.php' => config_path('cupparis-model-skeleton.php'),
+        ], 'public');
 
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'modelskeleton');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'modelskeleton');
 
+        // You can use Closure based composers
+        // which will be used to resolve any data
+        // in this case we will pass menu items from database
+        View::composer('modelskeleton::*', function ($view) {
+            $view->with('layoutView', Config::get('cupparis-model-skeleton.layout-view'));
+        });
 
     }
 
