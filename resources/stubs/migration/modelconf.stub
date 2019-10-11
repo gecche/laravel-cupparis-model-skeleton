@@ -43,10 +43,8 @@ var Model_{{$modelClass}} = {
         },
         'order_fields' : {
 {{$listOrderFields}}
-        },
-        init: function () {
-
         }
+
     }),
     edit: ConfEdit.extend({
         fields: [
@@ -54,9 +52,7 @@ var Model_{{$modelClass}} = {
         ],
         fields_config: {
 {{$editFieldsType}}
-        },
-        init: function () {
-
         }
+
     }),
 }
