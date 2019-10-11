@@ -1,6 +1,6 @@
 <?php
 
-use Cupparis\Database\Schema\Blueprint;
+use Gecche\Breeze\Database\Schema;
 use Illuminate\Database\Migrations\Migration;
 
 
