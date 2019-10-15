@@ -418,6 +418,76 @@ class Migration
 
     }
 
+    public function saveFoorm($migrationValues = [], $modelValues = [])
+    {
+
+
+
+
+        $filename = base_path("config/foorms/" . snake_case($this->modelName) . '.php');
+
+        if (file_exists($filename)) {
+            return;
+        }
+
+        $stub = $this->files->get($this->getStub('foorm'));
+
+        Log::info("FOORM::: ");
+        Log::info(print_r($migrationValues,true));
+        Log::info(print_r($modelValues,true));
+
+        $campi = Arr::get($migrationValues,'campi',[]);
+        unset($campi['timestamps']);
+        unset($campi['ownerships']);
+        $relazioni = Arr::get($modelValues,'relation_names',[]);
+
+
+        $campiFinali = [];
+        foreach ($campi as $nomeCampo => $campo) {
+            $campiFinali[$nomeCampo] = [];
+        }
+
+        $relazioniFinaliList = [];
+        $relazioniFinaliEdit = [];
+        foreach ($relazioni as $relazione) {
+            $relazioniFinaliList[$relazione] = [
+                'fields' => [
+
+                ],
+            ];
+            $relazioniFinaliEdit[$relazione] = [
+                'fields' => [
+
+                ],
+                'savetype' => [
+
+                ],
+            ];
+        }
+
+        $variables = [];
+
+        $stub = str_replace(
+            '{{$fields}}', $this->var_export54($campiFinali), $stub
+        );
+        $stub = str_replace(
+            '{{$relations}}', $this->var_export54($relazioniFinaliList), $stub
+        );
+        $stub = str_replace(
+            '{{$relationsEdit}}', $this->var_export54($relazioniFinaliEdit), $stub
+        );
+
+        foreach ($variables as $variableKey => $variableValue) {
+            $stub = str_replace(
+                '{{$' . $variableKey . '}}', $variableValue, $stub
+            );
+        }
+
+
+        $this->files->put($filename, $stub);
+
+    }
+
     protected function saveConfigFile($configFile, $configStub, $type = 'model', $params)
     {
         $filename = config_path($configFile);
@@ -766,4 +836,24 @@ class Migration
 //            }
 //        }
 //    }
+
+    protected function var_export54($var, $indent="") {
+        switch (gettype($var)) {
+            case "string":
+                return '"' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '"';
+            case "array":
+                $indexed = array_keys($var) === range(0, count($var) - 1);
+                $r = [];
+                foreach ($var as $key => $value) {
+                    $r[] = "$indent    "
+                        . ($indexed ? "" : $this->var_export54($key) . " => ")
+                        . $this->var_export54($value, "$indent    ");
+                }
+                return "[\n" . implode(",\n", $r) . "\n" . $indent . "]";
+            case "boolean":
+                return $var ? "TRUE" : "FALSE";
+            default:
+                return var_export($var, TRUE);
+        }
+    }
 }

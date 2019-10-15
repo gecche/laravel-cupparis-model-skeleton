@@ -213,6 +213,7 @@ class ModelSkeletonController extends Controller
         if ($modelValues) {
             $migrationService->saveModel();
             $migrationService->savePolicy($modelValues);
+            $migrationService->saveFoorm($migrationValues,$modelValues);
         }
 
         if ($modelsConfsValues) {
