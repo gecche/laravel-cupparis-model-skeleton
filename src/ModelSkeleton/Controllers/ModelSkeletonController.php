@@ -164,7 +164,7 @@ class ModelSkeletonController extends Controller
 
         if (!$modelsConfsValues) {
 
-            $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+            $migrationService = new Migration($migrationValues, $modelValues, $modelsConfsValues);
 
             $migrationService->saveMigration();
 
@@ -212,6 +212,7 @@ class ModelSkeletonController extends Controller
 
         if ($modelValues) {
             $migrationService->saveModel();
+            $migrationService->savePolicy($modelValues);
         }
 
         if ($modelsConfsValues) {

@@ -29,9 +29,9 @@ class {{$modelClass}} extends Breeze
 
 {{$relationsData}}
 
-//        'belongsto' => array(self::BELONGS_TO, 'App\Models\<MODELNAME>', 'foreignKey' => '<FOREIGNKEYNAME>'),
-//        'belongstomany' => array(self::BELONGS_TO_MANY, 'App\Models\<MODELNAME>', 'table' => '<TABLEPIVOTNAME>','pivotKeys' => [],'foreignKey' => '<FOREIGNKEYNAME>','otherKey' => '<OTHERKEYNAME>') ,
-//        'hasmany' => array(self::HAS_MANY, 'App\Models\<MODELNAME>', 'table' => '<TABLENAME>','foreignKey' => '<FOREIGNKEYNAME>'),
+//        'belongsto' => array(self::BELONGS_TO, {{$modelClass}}::class, 'foreignKey' => '<FOREIGNKEYNAME>'),
+//        'belongstomany' => array(self::BELONGS_TO_MANY, {{$modelClass}}::class, 'table' => '<TABLEPIVOTNAME>','pivotKeys' => [],'foreignKey' => '<FOREIGNKEYNAME>','otherKey' => '<OTHERKEYNAME>') ,
+//        'hasmany' => array(self::HAS_MANY, {{$modelClass}}::class, 'table' => '<TABLENAME>','foreignKey' => '<FOREIGNKEYNAME>'),
     ];
 
     public static $rules = [

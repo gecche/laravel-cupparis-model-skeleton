@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use App\Models\{{$modelClass}};
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Gate;
+
+class {{$modelClass}}Policy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\{{$modelClass}}  $model
+     * @return mixed
+     */
+    public function view(User $user, {{$modelClass}} $model)
+    {
+        //
+        if ($user->can('{{$viewPermission}}')) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        //
+        if ($user->can('{{$createPermission}}')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Deal  $model
+     * @return mixed
+     */
+    public function update(User $user, {{$modelClass}} $model)
+    {
+        //
+        if ($user->can('{{$updatePermission}}')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Deal  $model
+     * @return mixed
+     */
+    public function delete(User $user, {{$modelClass}} $model)
+    {
+        //
+        if ($user->can('{{$deletePermission}}')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can access to the listing of the models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function listing(User $user)
+    {
+        //
+        if ($user->can('{{$listingPermission}}')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can access to the listing of the models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function acl(User $user, $builder)
+    {
+
+        if ($user->can('{{$viewAllPermission}}')) {
+            return Gate::aclAll($builder);
+        }
+
+        if ($user->can('{{$viewPermission}}')) {
+            //IMPLEMENT ACL POLICY HERE
+        }
+
+        return Gate::aclNone($builder);
+    }
+}

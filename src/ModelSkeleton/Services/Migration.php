@@ -7,11 +7,20 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 use Validator;
 use Illuminate\Contracts\Auth\Registrar as RegistrarContract;
 
 class Migration
 {
+
+    /*
+     * SCRIPT PER RIMUOVERE I FILES CREATI DI PROVA
+     *
+     * php artisan migrate:rollback;
+     *
+     * rm -f app/Models/Prova.php;rm -f app/Models/Relations/Prova*.php;rm -f app/Policies/ProvaPolicy.php;rm -f public/js/ModelsConfs/M_Prova.php;rm -f database/migrations/*_prove_*;
+     */
 
     protected $migrationValues = [];
     protected $modelValues = [];
@@ -26,9 +35,8 @@ class Migration
     protected $modelName = null;
     protected $campi = [];
 
-    protected $configModelsFile = 'config/models.php';
-    protected $configModelsFileRoutesEntry = ['route_models','modelsconfs'];
 
+    protected $configModelsListEntries = [];
 
 //    protected $aclModels = [];
 
@@ -55,8 +63,7 @@ class Migration
 
         $this->langs = Arr::get($skeletonConfig,'langs',[]);
         $this->stubs = Arr::get($skeletonConfig,'stubs',[]);
-        $this->configModelsFile = Arr::get($skeletonConfig,'config_models_file','models.php');
-        $this->configModelsFileRoutesEntry = Arr::get($skeletonConfig,'config_models_file_routes_entry',[]);
+        $this->configModelsListEntries = Arr::get($skeletonConfig,'config_models_list_entries',[]);
 
 
         $this->migrationValues = $migrationValues;
@@ -335,6 +342,8 @@ class Migration
 
         $this->files->put($filename, $stub);
 
+
+
         /*
          * SALVO I FIELDS NEL LANG
          */
@@ -350,14 +359,70 @@ class Migration
             $this->saveResourceFile($fieldsLangFile, $configStub, 'fields');
         }
 
+        /*
+         * SALVO ANCHE PER LE ROUTES
+         * USO GLI STESSI METODI DEI LANGS
+         */
+
+        foreach ($this->configModelsListEntries as $configFile => $configEntries) {
+            $configEntries = Arr::wrap($configEntries);
+            $this->saveConfigFile($configFile.'.php', $configStub, 'listing', ['entries' => $configEntries]);
+        }
 
     }
 
-    protected function saveConfigFile($configFile, $configStub, $type = 'model')
+    public function savePolicy($modelValues = [])
+    {
+
+
+
+
+        $filename = base_path("app/Policies/" . $this->modelName . 'Policy.php');
+
+        if (file_exists($filename)) {
+            return;
+        }
+
+        $stub = $this->files->get($this->getStub('policy'));
+        $variables = [];
+
+        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',snake_case($this->modelName));
+
+        $permissions = [
+          'viewPermission' => 'view '.$modelPlural,
+            'viewAllPermission' => 'view all '.$modelPlural,
+            'updatePermission' => 'update '.$modelPlural,
+            'deletePermission' => 'delete '.$modelPlural,
+            'createPermission' => 'create '.$modelPlural,
+            'listingPermission' => 'listing '.$modelPlural,
+        ];
+
+        $stub = str_replace(
+            '{{$modelClass}}', $this->modelName, $stub
+        );
+
+        foreach ($permissions as $permissionKey => $permissionValue) {
+            $stub = str_replace(
+                '{{$' . $permissionKey . '}}', $permissionValue, $stub
+            );
+        }
+
+        foreach ($variables as $variableKey => $variableValue) {
+            $stub = str_replace(
+                '{{$' . $variableKey . '}}', $variableValue, $stub
+            );
+        }
+
+
+        $this->files->put($filename, $stub);
+
+    }
+
+    protected function saveConfigFile($configFile, $configStub, $type = 'model', $params)
     {
         $filename = config_path($configFile);
 
-        $this->saveFile($filename, $configStub, $type = 'model');
+        $this->saveFile($filename, $configStub, $type, $params);
     }
 
     protected function saveResourceFile($resourceFile, $configStub, $type = 'model')
@@ -367,7 +432,7 @@ class Migration
         $this->saveFile($filename, $configStub, $type);
     }
 
-    protected function saveFile($filename, $configStub, $type = 'model')
+    protected function saveFile($filename, $configStub, $type = 'model', $params = [])
     {
 
         if (!$this->files->exists($filename)) {
@@ -384,7 +449,7 @@ class Migration
 
         $methodName = 'setConfigFile' . studly_case($type);
 
-        $finalLangs = call_user_func_array([$this,$methodName],[$langs]);
+        $finalLangs = call_user_func_array([$this,$methodName],[$langs,$params]);
 
         $modelConfigStub = str_replace(
             '{{$configArray}}', var_export($finalLangs, true), $configStub
@@ -394,7 +459,7 @@ class Migration
 
     }
 
-    protected function setConfigFileModel($langs) {
+    protected function setConfigFileModel($langs,$params = []) {
         $modelName = snake_case($this->modelName);
         if (!array_key_exists($modelName, $langs)) {
             $singolare = array_get($this->modelValues, 'lang_modello_singolare', $modelName);
@@ -408,7 +473,7 @@ class Migration
         return $langs;
 
     }
-    protected function setConfigFileFields($langs) {
+    protected function setConfigFileFields($langs,$params = []) {
 
         foreach ($this->campi as $field => $fieldValue) {
 
@@ -427,12 +492,16 @@ class Migration
 //        ksort($langs);
 
     }
-    protected function setConfigFileRoutes($config) {
+
+    protected function setConfigFileListing($config,$params = []) {
+
 
 
         $modelName = snake_case($this->modelName);
 
-        foreach ($this->configModelsFileRoutesEntry as $entry) {
+        $entries = Arr::get($params,'entries',[]);
+        foreach ($entries as $entry) {
+            Log::info("LISTING 1:: ".$entry);
             $routes = array_get($config, $entry, []);
             if (!array_key_exists($modelName, $routes)) {
                 $routes[] = $modelName;

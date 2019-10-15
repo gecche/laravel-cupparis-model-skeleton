@@ -30,8 +30,9 @@ return [
         'modelconf' => 'stubs/migration/modelconf.stub',
         'config' => 'stubs/migration/config.stub',
         'fieldsTypesPath' => 'stubs/migration/modelsConfsFieldsTypes/',
+        'policy' => 'stubs/migration/policy.stub',
     ],
 
-    'config_models_file' => 'models.php',
-    'config_models_file_routes_entry' => ['route_models','modelsconfs'],
+    'config_models_list_entries' => ['json_rest' => 'models'], //config entries to be updated with new models
+            // file => entry|entries stirng or arry of strings (dot notation)
 ];
