@@ -11,7 +11,7 @@ class {{$modelClass}} extends Breeze
 {
 
     {{$traits}}
-//    use ModelUploadsTrait;
+//    use ModelWithUploadsTrait;
 
     protected $table = '{{$migrationTable}}';
 
