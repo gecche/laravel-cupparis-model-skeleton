@@ -39,6 +39,7 @@ class ModelSkeletonServiceProvider extends ServiceProvider
         ], 'public');
 
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'modelskeleton');
 
         // You can use Closure based composers

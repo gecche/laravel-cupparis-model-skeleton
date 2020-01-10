@@ -28,7 +28,6 @@ class ModelSkeletonController extends Controller
     {
         ini_set('max_input_vars', 10000);
 
-
         $this->skeletonConfig = Config::get('cupparis-model-skeleton');
 
 

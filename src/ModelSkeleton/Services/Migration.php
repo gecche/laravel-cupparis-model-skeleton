@@ -386,15 +386,15 @@ class Migration
         $stub = $this->files->get($this->getStub('policy'));
         $variables = [];
 
-        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',snake_case($this->modelName));
+//        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',snake_case($this->modelName));
 
         $permissions = [
-          'viewPermission' => 'view '.$modelPlural,
-            'viewAllPermission' => 'view all '.$modelPlural,
-            'updatePermission' => 'update '.$modelPlural,
-            'deletePermission' => 'delete '.$modelPlural,
-            'createPermission' => 'create '.$modelPlural,
-            'listingPermission' => 'listing '.$modelPlural,
+          'viewPermission' => 'view '.$this->modelName,
+            'viewAllPermission' => 'view all '.$this->modelName,
+            'updatePermission' => 'update '.$this->modelName,
+            'deletePermission' => 'delete '.$this->modelName,
+            'createPermission' => 'create '.$this->modelName,
+            'listingPermission' => 'listing '.$this->modelName,
         ];
 
         $stub = str_replace(
