@@ -34,13 +34,13 @@ class ModelSkeletonServiceProvider extends ServiceProvider
     {
 
         $this->publishes([
-            __DIR__ . '/../../config/cupparis-model-skeleton.php' => config_path('cupparis-model-skeleton.php'),
-            __DIR__ . '/../../resources/stubs/migration' => base_path('stubs/migration'),
+            __DIR__ . '/../config/cupparis-model-skeleton.php' => config_path('cupparis-model-skeleton.php'),
+            __DIR__ . '/../resources/stubs/migration' => base_path('stubs/migration'),
         ], 'public');
 
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'modelskeleton');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'modelskeleton');
 
         // You can use Closure based composers
         // which will be used to resolve any data
