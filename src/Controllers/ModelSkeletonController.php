@@ -3,8 +3,7 @@
 use Gecche\Cupparis\ModelSkeleton\Services\Migration;
 use Gecche\DBHelper\Facades\DBHelper;
 use Illuminate\Routing\Controller;
-use App\Models\Role;
-use Cupparis\Form\ModelDBMethods;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +12,9 @@ use Illuminate\Support\Facades\Auth;
 //use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request as RequestFacade;
 //use Laracasts\Flash\Flash;
+use Illuminate\Support\Str;
 
 class ModelSkeletonController extends Controller
 {
@@ -56,13 +56,13 @@ class ModelSkeletonController extends Controller
         $user = Auth::user();
         $modelDbMethods = DBHelper::helper($user->getConnection()->getName());
 
-        $post = Input::all();
+        $post = RequestFacade::all();
 
         $migration = [];
 
-        $migration['nome_tabella'] = array_get($post, 'nome_tabella', '');
+        $migration['nome_tabella'] = Arr::get($post, 'nome_tabella', '');
 
-        $nome_campi = array_get($post, 'nome_campi', '');
+        $nome_campi = Arr::get($post, 'nome_campi', '');
         $nome_campi = explode(',', $nome_campi);
         $nome_campi = array_map('trim', $nome_campi);
 
@@ -142,11 +142,11 @@ class ModelSkeletonController extends Controller
     public function postMigration2()
     {
 
-        $post = Input::all();
+        $post = RequestFacade::all();
 
         $migrationValues = [
-            'nome_tabella' => array_get($post, 'nome_tabella', ''),
-            'campi' => array_get($post, 'campi', []),
+            'nome_tabella' => Arr::get($post, 'nome_tabella', ''),
+            'campi' => Arr::get($post, 'campi', []),
         ];
 
         $modelValues = $this->setModelValues($post);
@@ -154,7 +154,7 @@ class ModelSkeletonController extends Controller
 
         $modelsConfsValues = false;
 
-        if (array_get($post, 'crea_modelsconfs', 'no') == 'si') {
+        if (Arr::get($post, 'crea_modelsconfs', 'no') == 'si') {
 
             $modelsConfsValues = true;
 
@@ -195,11 +195,11 @@ class ModelSkeletonController extends Controller
     public function postMigration3()
     {
 
-        $post = Input::all();
+        $post = RequestFacade::all();
 
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValuesJson = Arr::get($post, 'migrationValuesJson', null);
         $migrationValues = json_decode($migrationValuesJson, true);
-        $modelValuesJson = array_get($post, 'modelValuesJson', null);
+        $modelValuesJson = Arr::get($post, 'modelValuesJson', null);
         $modelValues = json_decode($modelValuesJson, true);
 
         $modelsConfsValues = $this->setModelsConfsValues($post);
@@ -236,8 +236,8 @@ class ModelSkeletonController extends Controller
     public function postModelconf()
     {
 
-        $post = Input::all();
-        $modelName = studly_case(array_get($post, 'nome_modello', ''));
+        $post = RequestFacade::all();
+        $modelName = Str::studly(Arr::get($post, 'nome_modello', ''));
         $fullModelName = Arr::get($this->skeletonConfig,'models_namespace','App\\') . $modelName;
         $model = new $fullModelName;
 
@@ -299,11 +299,11 @@ class ModelSkeletonController extends Controller
     public function postModelconf2()
     {
 
-        $post = Input::all();
+        $post = RequestFacade::all();
 
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValuesJson = Arr::get($post, 'migrationValuesJson', null);
         $migrationValues = json_decode($migrationValuesJson, true);
-        $modelValuesJson = array_get($post, 'modelValuesJson', null);
+        $modelValuesJson = Arr::get($post, 'modelValuesJson', null);
         $modelValues = json_decode($modelValuesJson, true);
 
         $modelsConfsValues = $this->setModelsConfsValues($post);
@@ -340,8 +340,8 @@ class ModelSkeletonController extends Controller
         $user = Auth::user();
         $modelDbMethods = new ModelDBMethods($user->getConnection());
 
-        $post = Input::all();
-        $migration['nome_tabella'] = array_get($post, 'nome_tabella', '');
+        $post = RequestFacade::all();
+        $migration['nome_tabella'] = Arr::get($post, 'nome_tabella', '');
 
         $tables = $modelDbMethods->listTables();
         $fieldsDatatypes = $modelDbMethods->listColumnsMigrationDatatypes($migration['nome_tabella']);
@@ -379,8 +379,8 @@ class ModelSkeletonController extends Controller
     {
 
 
-        $post = Input::all();
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $post = RequestFacade::all();
+        $migrationValuesJson = Arr::get($post, 'migrationValuesJson', null);
         $migrationValues = json_decode($migrationValuesJson, true);
 
 
@@ -389,7 +389,7 @@ class ModelSkeletonController extends Controller
 
         $modelsConfsValues = false;
 
-        if (array_get($post, 'crea_modelsconfs', 'no') == 'si') {
+        if (Arr::get($post, 'crea_modelsconfs', 'no') == 'si') {
 
             $modelsConfsValues = true;
 
@@ -427,11 +427,11 @@ class ModelSkeletonController extends Controller
     public function postModel3()
     {
 
-        $post = Input::all();
+        $post = RequestFacade::all();
 
-        $migrationValuesJson = array_get($post, 'migrationValuesJson', null);
+        $migrationValuesJson = Arr::get($post, 'migrationValuesJson', null);
         $migrationValues = json_decode($migrationValuesJson, true);
-        $modelValuesJson = array_get($post, 'modelValuesJson', null);
+        $modelValuesJson = Arr::get($post, 'modelValuesJson', null);
         $modelValues = json_decode($modelValuesJson, true);
 
         $modelsConfsValues = $this->setModelsConfsValues($post);
@@ -456,25 +456,25 @@ class ModelSkeletonController extends Controller
     protected function setModelValues($post)
     {
         $modelValues = [];
-        if (array_get($post, 'crea_modello', 'no') == 'si') {
+        if (Arr::get($post, 'crea_modello', 'no') == 'si') {
             $modelValues = [
-                'nome_modello' => array_get($post, 'nome_modello', ''),
-                'lang_modello_singolare' => array_get($post, 'lang_modello_singolare', ''),
-                'lang_modello_plurale' => array_get($post, 'lang_modello_plurale', ''),
-                'columns_for_select_list' => array_get($post, 'columns_for_select_list', []),
-                'columns_for_autocomplete' => array_get($post, 'columns_for_autocomplete', []),
-                'columns_for_default_order' => array_get($post, 'columns_for_default_order', []),
-                'columns_for_default_order_direction' => array_get($post, 'columns_for_default_order_direction', []),
-                'traits' => array_get($post, 'traits', []),
+                'nome_modello' => Arr::get($post, 'nome_modello', ''),
+                'lang_modello_singolare' => Arr::get($post, 'lang_modello_singolare', ''),
+                'lang_modello_plurale' => Arr::get($post, 'lang_modello_plurale', ''),
+                'columns_for_select_list' => Arr::get($post, 'columns_for_select_list', []),
+                'columns_for_autocomplete' => Arr::get($post, 'columns_for_autocomplete', []),
+                'columns_for_default_order' => Arr::get($post, 'columns_for_default_order', []),
+                'columns_for_default_order_direction' => Arr::get($post, 'columns_for_default_order_direction', []),
+                'traits' => Arr::get($post, 'traits', []),
             ];
 
-            $relation_names = array_get($post, 'relation_names', []);
-            $relation_types = array_get($post, 'relation_types', []);
-            $relation_models = array_get($post, 'relation_models', []);
-            $relation_tables = array_get($post, 'relation_tables', []);
-            $relation_foreignkey = array_get($post, 'relation_foreignkey', []);
-            $relation_otherkey = array_get($post, 'relation_otherkey', []);
-            $relation_pivotkey = array_get($post, 'relation_pivotkey', []);
+            $relation_names = Arr::get($post, 'relation_names', []);
+            $relation_types = Arr::get($post, 'relation_types', []);
+            $relation_models = Arr::get($post, 'relation_models', []);
+            $relation_tables = Arr::get($post, 'relation_tables', []);
+            $relation_foreignkey = Arr::get($post, 'relation_foreignkey', []);
+            $relation_otherkey = Arr::get($post, 'relation_otherkey', []);
+            $relation_pivotkey = Arr::get($post, 'relation_pivotkey', []);
 
             foreach ($relation_names as $relationKey => $relationValue) {
                 if ($relationValue) {
@@ -509,12 +509,12 @@ class ModelSkeletonController extends Controller
         $modelsConfsValues = [];
 
 
-        $modelsConfsValues['nome_file_modelsconfs'] = array_get($post, 'nome_file_modelsconfs', '');
-        $searchValues = array_get($post, 'modelsconfs-searchfields', []);
+        $modelsConfsValues['nome_file_modelsconfs'] = Arr::get($post, 'nome_file_modelsconfs', '');
+        $searchValues = Arr::get($post, 'modelsconfs-searchfields', []);
 
-        $searchNomeValues = array_get($searchValues, 'nome', []);
-        $searchOperatorValues = array_get($searchValues, 'operator', []);
-        $searchTypeValues = array_get($searchValues, 'type', []);
+        $searchNomeValues = Arr::get($searchValues, 'nome', []);
+        $searchOperatorValues = Arr::get($searchValues, 'operator', []);
+        $searchTypeValues = Arr::get($searchValues, 'type', []);
 
         foreach ($searchNomeValues as $key => $value) {
             if ($value) {
@@ -531,11 +531,11 @@ class ModelSkeletonController extends Controller
         $modelsConfsValues['search']['type'] = $searchTypeValues;
 
 
-        $listValues = array_get($post, 'modelsconfs-listfields', []);
+        $listValues = Arr::get($post, 'modelsconfs-listfields', []);
 
-        $listNomeValues = array_get($listValues, 'nome', []);
-        $listTypeValues = array_get($listValues, 'type', []);
-        $listOrderValues = array_get($listValues, 'order', []);
+        $listNomeValues = Arr::get($listValues, 'nome', []);
+        $listTypeValues = Arr::get($listValues, 'type', []);
+        $listOrderValues = Arr::get($listValues, 'order', []);
 
         foreach ($listNomeValues as $key => $value) {
             if ($value) {
@@ -551,10 +551,10 @@ class ModelSkeletonController extends Controller
         $modelsConfsValues['list']['order'] = $listOrderValues;
         $modelsConfsValues['list']['type'] = $listTypeValues;
 
-        $editValues = array_get($post, 'modelsconfs-editfields', []);
+        $editValues = Arr::get($post, 'modelsconfs-editfields', []);
 
-        $editNomeValues = array_get($editValues, 'nome', []);
-        $editTypeValues = array_get($editValues, 'type', []);
+        $editNomeValues = Arr::get($editValues, 'nome', []);
+        $editTypeValues = Arr::get($editValues, 'type', []);
 
         foreach ($editNomeValues as $key => $value) {
             if ($value) {
@@ -577,7 +577,7 @@ class ModelSkeletonController extends Controller
 
         $model = [];
 
-        $model['name'] = studly_case($nomeTabella);
+        $model['name'] = Str::studly($nomeTabella);
         $campi = array_combine(array_keys($campi), array_keys($campi));
         $model['options']['campi'] = ['no' => ''] + $campi;
 
@@ -628,7 +628,7 @@ class ModelSkeletonController extends Controller
             $files->makeDirectory(rtrim($fullPath,"/"),0755,true);
         }
 
-        $nomeModello = studly_case(array_get($modelValues,'nome_modello',''));
+        $nomeModello = Str::studly(Arr::get($modelValues,'nome_modello',''));
 
         return $relativePath . 'M_'.$nomeModello . '.js';
 
@@ -712,13 +712,13 @@ class ModelSkeletonController extends Controller
 
         $modelsConfs['campi'] = [];
 
-        foreach (array_get($migrationValues, 'campi', []) as $fieldKey => $fieldValue) {
+        foreach (Arr::get($migrationValues, 'campi', []) as $fieldKey => $fieldValue) {
 
             if (in_array($fieldKey, ['timestamps', 'ownerships'])) {
                 continue;
             }
 
-            $type = array_get($fieldValue, 'tipo', array_get($fieldValue, 'type'));
+            $type = Arr::get($fieldValue, 'tipo', Arr::get($fieldValue, 'type'));
             $modelsConfs['campi'][$fieldKey] = [
                 'type' => $type,
                 'defaultConf' => $this->_getDefaultFieldConf($fieldKey,$type),

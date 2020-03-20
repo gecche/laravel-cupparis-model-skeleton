@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Validator;
 use Illuminate\Contracts\Auth\Registrar as RegistrarContract;
+use Illuminate\Support\Str;
+
 
 class Migration
 {
@@ -69,7 +71,7 @@ class Migration
         $this->migrationValues = $migrationValues;
         $this->modelValues = $modelValues;
         $this->modelsConfsValues = $modelsConfsValues;
-        $this->modelName = array_get($this->modelValues, 'nome_modello', '');
+        $this->modelName = Arr::get($this->modelValues, 'nome_modello', '');
 
 
 //        $this->aclModels = Config::get('acl.models');
@@ -98,19 +100,19 @@ class Migration
 
         $stub = $this->files->get($this->getStub());
 
-        $this->migrationTable = array_get($this->migrationValues, 'nome_tabella', '');
+        $this->migrationTable = Arr::get($this->migrationValues, 'nome_tabella', '');
 
         $stub = str_replace(
             '{{$migrationTable}}', $this->migrationTable, $stub
         );
 
-        $migrationClass = 'Create' . studly_case($this->migrationTable)  . 'Table';
+        $migrationClass = 'Create' . Str::studly($this->migrationTable)  . 'Table';
 
         $stub = str_replace(
             '{{$migrationClass}}', $migrationClass, $stub
         );
 
-        $this->campi = array_get($this->migrationValues, 'campi', []);
+        $this->campi = Arr::get($this->migrationValues, 'campi', []);
 
         $migrationCampi = $this->getIndent() . '$table->increments(\'id\');' . "\n";
 
@@ -179,8 +181,8 @@ class Migration
         }
 
         $fieldString = '$table->';
-        $type = array_get($fieldValue, 'tipo', 'string');
-        $info = array_get($fieldValue, 'info', '');
+        $type = Arr::get($fieldValue, 'tipo', 'string');
+        $info = Arr::get($fieldValue, 'info', '');
         $info = array_map('trim', explode(',', $info));
         $infoString = '';
 
@@ -214,11 +216,11 @@ class Migration
                 break;
         }
 
-        $nullable = array_get($fieldValue, 'nullable', 'no');
+        $nullable = Arr::get($fieldValue, 'nullable', 'no');
         if ($nullable == 'si') {
             $fieldString .= '->nullable()';
         }
-        $default = array_get($fieldValue, 'default', '');
+        $default = Arr::get($fieldValue, 'default', '');
         if ($default) {
             switch ($type) {
                 case 'integer':
@@ -235,18 +237,18 @@ class Migration
 
         }
 
-        $index = array_get($fieldValue, 'index', '');
+        $index = Arr::get($fieldValue, 'index', '');
 
-        $relazioneTabella = array_get($fieldValue, 'relazione_tabella', '');
-        $relazioneCampo = array_get($fieldValue, 'relazione_campo', '');
+        $relazioneTabella = Arr::get($fieldValue, 'relazione_tabella', '');
+        $relazioneCampo = Arr::get($fieldValue, 'relazione_campo', '');
 
         $relationString = '';
         if ($relazioneTabella && $relazioneCampo) {
             //VINCOLO A CREARE UN INDICE NON UNICO SUL CAMPO PER LA RELAZIONE
             $index = 'index';
 
-            $onDelete = array_get($fieldValue, 'ondelete', 'restrict');
-            $onUpdate = array_get($fieldValue, 'onupdate', 'restrict');
+            $onDelete = Arr::get($fieldValue, 'ondelete', 'restrict');
+            $onUpdate = Arr::get($fieldValue, 'onupdate', 'restrict');
             $relationString = '$table->foreign(\'' . $fieldName . '\')';
             $relationString .= '->references(\'' . $relazioneCampo . '\')';
             $relationString .= '->on(\'' . $relazioneTabella . '\')';
@@ -289,10 +291,10 @@ class Migration
         $stub = $this->files->get($this->getStub('model'));
         $variables = [];
 
-        $columns_for_select_list = array_get($this->modelValues, 'columns_for_select_list', []);
-        $columns_for_default_order = array_get($this->modelValues, 'columns_for_default_order', []);
-        $columns_for_default_order_direction = array_get($this->modelValues, 'columns_for_default_order_direction', []);
-        $columns_for_autocomplete = array_get($this->modelValues, 'columns_for_autocomplete', []);
+        $columns_for_select_list = Arr::get($this->modelValues, 'columns_for_select_list', []);
+        $columns_for_default_order = Arr::get($this->modelValues, 'columns_for_default_order', []);
+        $columns_for_default_order_direction = Arr::get($this->modelValues, 'columns_for_default_order_direction', []);
+        $columns_for_autocomplete = Arr::get($this->modelValues, 'columns_for_autocomplete', []);
 
 
 //        $this->setApici($variables['columnsForSelectList']);
@@ -302,7 +304,7 @@ class Migration
             $columns_for_default_order);
         $variables['columnsSearchAutoComplete'] = $this->implodeArray($columns_for_autocomplete);
 
-        $traits = array_get($this->modelValues, 'traits', []);
+        $traits = Arr::get($this->modelValues, 'traits', []);
 
         $traitString = '';
         foreach ($traits as $trait) {
@@ -310,13 +312,13 @@ class Migration
         }
         $variables['traits'] = $traitString;
 
-        $relation_names = array_get($this->modelValues, 'relation_names', []);
-        $relation_types = array_get($this->modelValues, 'relation_types', []);
-        $relation_models = array_get($this->modelValues, 'relation_models', []);
-        $relation_tables = array_get($this->modelValues, 'relation_tables', []);
-        $relation_foreignkey = array_get($this->modelValues, 'relation_foreignkey', []);
-        $relation_otherkey = array_get($this->modelValues, 'relation_otherkey', []);
-        $relation_pivotkey = array_get($this->modelValues, 'relation_pivotkey', []);
+        $relation_names = Arr::get($this->modelValues, 'relation_names', []);
+        $relation_types = Arr::get($this->modelValues, 'relation_types', []);
+        $relation_models = Arr::get($this->modelValues, 'relation_models', []);
+        $relation_tables = Arr::get($this->modelValues, 'relation_tables', []);
+        $relation_foreignkey = Arr::get($this->modelValues, 'relation_foreignkey', []);
+        $relation_otherkey = Arr::get($this->modelValues, 'relation_otherkey', []);
+        $relation_pivotkey = Arr::get($this->modelValues, 'relation_pivotkey', []);
 
         $variables['relationsData'] = $this->getRelationsDataString($relation_names, $relation_types, $relation_models,
             $relation_tables, $relation_foreignkey, $relation_otherkey, $relation_pivotkey);
@@ -517,7 +519,7 @@ class Migration
 
         $langs = include $filename;
 
-        $methodName = 'setConfigFile' . studly_case($type);
+        $methodName = 'setConfigFile' . Str::studly($type);
 
         $finalLangs = call_user_func_array([$this,$methodName],[$langs,$params]);
 
@@ -532,8 +534,8 @@ class Migration
     protected function setConfigFileModel($langs,$params = []) {
         $modelName = snake_case($this->modelName);
         if (!array_key_exists($modelName, $langs)) {
-            $singolare = array_get($this->modelValues, 'lang_modello_singolare', $modelName);
-            $plurale = array_get($this->modelValues, 'lang_modello_plurale', $modelName);
+            $singolare = Arr::get($this->modelValues, 'lang_modello_singolare', $modelName);
+            $plurale = Arr::get($this->modelValues, 'lang_modello_plurale', $modelName);
 
             $langs[$modelName] = "$singolare|$plurale";
         }
@@ -572,7 +574,7 @@ class Migration
         $entries = Arr::get($params,'entries',[]);
         foreach ($entries as $entry) {
             Log::info("LISTING 1:: ".$entry);
-            $routes = array_get($config, $entry, []);
+            $routes = Arr::get($config, $entry, []);
             if (!array_key_exists($modelName, $routes)) {
                 $routes[] = $modelName;
             }
@@ -590,16 +592,16 @@ class Migration
     {
 
 
-        $modelsConfsFileName = array_get($this->modelsConfsValues, 'nome_file_modelsconfs', '');
+        $modelsConfsFileName = Arr::get($this->modelsConfsValues, 'nome_file_modelsconfs', '');
 
         $filename = public_path($modelsConfsFileName);
 
         $stub = $this->files->get($this->getStub('modelconf'));
         $variables = [];
 
-        $searchValues = array_get($this->modelsConfsValues, 'search', []);
-        $listValues = array_get($this->modelsConfsValues, 'list', []);
-        $editValues = array_get($this->modelsConfsValues, 'edit', []);
+        $searchValues = Arr::get($this->modelsConfsValues, 'search', []);
+        $listValues = Arr::get($this->modelsConfsValues, 'list', []);
+        $editValues = Arr::get($this->modelsConfsValues, 'edit', []);
 
         $variables['searchFields'] = $this->implodeArrayJsFields($searchValues['nome']);
         $variables['searchOperators'] = $this->implodeArrayJsOperators($searchValues['nome'],
