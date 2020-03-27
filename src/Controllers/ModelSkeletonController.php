@@ -258,10 +258,10 @@ class ModelSkeletonController extends Controller
 
         foreach ($relations as $relationKey => $relationValue) {
             $modelValues['relation_names'][] = $relationKey;
-            $modelValues['relation_types'][] = strtoupper(snake_case($relationValue[0]));
+            $modelValues['relation_types'][] = strtoupper(Str::snake($relationValue[0]));
 
             $relationModel = substr($relationValue[1], strlen(Arr::get($this->skeletonConfig,'models_namespace','App\\')) - 1);
-            $modelValues['relation_models'][] = snake_case($relationModel);
+            $modelValues['relation_models'][] = Str::snake($relationModel);
         }
 
 
@@ -599,8 +599,8 @@ class ModelSkeletonController extends Controller
 
         $modelsAndTraits = $this->getModelAndTraitNames();
 
-        $models = array_map('studly_case', $modelsAndTraits['models']);
-        $traits = array_map('studly_case', $modelsAndTraits['traits']);
+        $models = array_map(['Illuminate\Support\Str','studly'], $modelsAndTraits['models']);
+        $traits = array_map(['Illuminate\Support\Str','studly'], $modelsAndTraits['traits']);
 
         $model['options']['relations-models'] = array_combine($models, $models);
         $model['options']['traits'] = array_combine($traits, $traits);
@@ -958,7 +958,7 @@ class ModelSkeletonController extends Controller
                     continue;
                 }
                 if ($this->_includeModelPermissions($model)) {
-                    $models[] = snake_case($model);
+                    $models[] = Str::snake($model);
                 }
             }
         }
@@ -973,7 +973,7 @@ class ModelSkeletonController extends Controller
             return false;
         }
 
-        $model = snake_case($model);
+        $model = Str::snake($model);
 
         $suffixModelsToFilter = [
             '_attachment',
@@ -1013,10 +1013,10 @@ class ModelSkeletonController extends Controller
                 $model = substr($name, 0, -4);
 
                 if (class_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
-                    $models[] = snake_case($model);
+                    $models[] = Str::snake($model);
                 }
                 if (trait_exists(Arr::get($this->skeletonConfig,'models_namespace','App\\') . $model)) {
-                    $traits[] = snake_case($model);
+                    $traits[] = Str::snake($model);
                 }
             }
         }

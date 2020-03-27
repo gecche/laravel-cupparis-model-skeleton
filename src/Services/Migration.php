@@ -1,16 +1,14 @@
 <?php namespace Gecche\Cupparis\ModelSkeleton\Services;
 
-use App\Models\User;
-use App\Services\Permissions;
+
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
-use Validator;
-use Illuminate\Contracts\Auth\Registrar as RegistrarContract;
-use Illuminate\Support\Str;
+
 
 
 class Migration
@@ -388,7 +386,7 @@ class Migration
         $stub = $this->files->get($this->getStub('policy'));
         $variables = [];
 
-//        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',snake_case($this->modelName));
+//        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',Str::snake($this->modelName));
 
         $permissions = [
           'viewPermission' => 'view '.$this->modelName,
@@ -426,7 +424,7 @@ class Migration
 
 
 
-        $filename = base_path("config/foorms/" . snake_case($this->modelName) . '.php');
+        $filename = base_path("config/foorms/" . Str::snake($this->modelName) . '.php');
 
         if (file_exists($filename)) {
             return;
@@ -532,7 +530,7 @@ class Migration
     }
 
     protected function setConfigFileModel($langs,$params = []) {
-        $modelName = snake_case($this->modelName);
+        $modelName = Str::snake($this->modelName);
         if (!array_key_exists($modelName, $langs)) {
             $singolare = Arr::get($this->modelValues, 'lang_modello_singolare', $modelName);
             $plurale = Arr::get($this->modelValues, 'lang_modello_plurale', $modelName);
@@ -569,7 +567,7 @@ class Migration
 
 
 
-        $modelName = snake_case($this->modelName);
+        $modelName = Str::snake($this->modelName);
 
         $entries = Arr::get($params,'entries',[]);
         foreach ($entries as $entry) {

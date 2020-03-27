@@ -29,12 +29,12 @@
                         <td>Traduzione (singulare|plurale)</td>
                         <td colspan="2">
                             <input class="form-control" type="text" name="lang_modello_singolare"
-                                   value="{{snake_case($model['name'])}}"
+                                   value="{{\Illuminate\Support\Str::snake($model['name'])}}"
                             >
                         </td>
                         <td colspan="3">
                             <input class="form-control" type="text" name="lang_modello_plurale"
-                                   value="{{snake_case($model['name'])}}"
+                                   value="{{\Illuminate\Support\Str::snake($model['name'])}}"
                             >
                         </td>
                     </tr>
