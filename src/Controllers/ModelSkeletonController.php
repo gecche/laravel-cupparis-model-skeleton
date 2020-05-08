@@ -778,7 +778,7 @@ class ModelSkeletonController extends Controller
                 ];
                 break;
             case 'integer':// => 'INTEGER',
-                if (ends_with($fieldKey,'_id')) {
+                if (Str::endsWith($fieldKey,'_id')) {
                     $defaultConf = [
                         'search' => [
                             'type' => 'select',
@@ -950,7 +950,7 @@ class ModelSkeletonController extends Controller
         $filesModels = $files->allFiles(app_path() . '/Models');
         $models = [];
         foreach ($filesModels as $file) {
-            if (ends_with($file, '.php')) {
+            if (Str::endsWith($file, '.php')) {
                 $name = $file->getRelativePathName();
                 $model = substr($name, 0, -4);
 
@@ -981,7 +981,7 @@ class ModelSkeletonController extends Controller
             '_foto',
             'test',
         ];
-        if (ends_with($model, $suffixModelsToFilter)) {
+        if (Str::endsWith($model, $suffixModelsToFilter)) {
             return false;
         }
 
@@ -1008,7 +1008,7 @@ class ModelSkeletonController extends Controller
         $models = [];
         $traits = [];
         foreach ($filesModels as $file) {
-            if (ends_with($file, '.php')) {
+            if (Str::endsWith($file, '.php')) {
                 $name = $file->getRelativePathName();
                 $model = substr($name, 0, -4);
 
