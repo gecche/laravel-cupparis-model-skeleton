@@ -1,13 +1,11 @@
 
-var Model_{{$modelClass}} = {
-    search: ConfSearch.extend({
+var Model{{$modelClass}} = {
+    search: {
+        modelName : '{{$snakeModelName}}'
         fields: [
 {{$searchFields}}
         ],
-        operator: {
-{{$searchOperators}}
-        },
-        fields_config: {
+        fieldsConfig: {
 {{$searchFieldsType}}
         },
         // groups: {
@@ -23,36 +21,35 @@ var Model_{{$modelClass}} = {
         //     }
         // },
 
-    }),
-    list: ConfList.extend({
+    },
+    list: {
+        modelName : '{{$snakeModelName}}'
         actions : [
-            'ActionView',
-            'ActionEdit',
-            'ActionDelete',
-            'ActionMultiDelete',
-        ],
-        routeName : null,
-        dataTableSearchSelect : [
-{{$searchFields}}
+            'action-insert',
+            'action-edit',
+            'action-delete',
+            'action-delete-selected',
         ],
         fields: [
 {{$listFields}}
         ],
-        fields_config: {
+        fieldsConfig: {
 {{$listFieldsType}}
         },
-        'order_fields' : {
+        orderFields : {
 {{$listOrderFields}}
         }
 
-    }),
-    edit: ConfEdit.extend({
+    },
+    edit: {
+        modelName : '{{$snakeModelName}}'
+        actions : ['action-save','action-back'],
         fields: [
 {{$editFields}}
         ],
-        fields_config: {
+        fieldsConfig: {
 {{$editFieldsType}}
         }
 
-    }),
+    },
 }

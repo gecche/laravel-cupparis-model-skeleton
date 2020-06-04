@@ -169,9 +169,11 @@ class ModelSkeletonController extends Controller
 
             if ($modelValues) {
                 $migrationService->saveModel();
+                $migrationService->savePolicy($modelValues);
+                $migrationService->saveFoorm($migrationValues,$modelValues);
             }
 
-            Flash::success('migrazione eseguita con successo (senza modelsconfs)');
+            //Flash::success('migrazione eseguita con successo (senza modelsconfs)');
             return view('modelskeleton::migrations', compact([]));
 
         } else {
@@ -312,7 +314,7 @@ class ModelSkeletonController extends Controller
 
         $migrationService->saveModelConf();
 
-        Flash::success('migrazione model conf eseguita con successo');
+        //Flash::success('migrazione model conf eseguita con successo');
         return view('modelskeleton::migrations', compact([]));
 
     }
@@ -322,8 +324,7 @@ class ModelSkeletonController extends Controller
     {
 
         $user = Auth::user();
-
-        $modelDbMethods = new ModelDBMethods($user->getConnection());
+        $modelDbMethods = DBHelper::helper($user->getConnection()->getName());
 
         $tables = $modelDbMethods->listTables();
 
@@ -338,7 +339,7 @@ class ModelSkeletonController extends Controller
     {
 
         $user = Auth::user();
-        $modelDbMethods = new ModelDBMethods($user->getConnection());
+        $modelDbMethods = DBHelper::helper($user->getConnection()->getName());
 
         $post = RequestFacade::all();
         $migration['nome_tabella'] = Arr::get($post, 'nome_tabella', '');
@@ -398,12 +399,14 @@ class ModelSkeletonController extends Controller
 
         if (!$modelsConfsValues) {
 
-            $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+            $migrationService = new Migration($migrationValues, $modelValues, $modelsConfsValues);
 
 
             $migrationService->saveModel();
+            $migrationService->savePolicy($modelValues);
+            $migrationService->saveFoorm($migrationValues,$modelValues);
 
-            Flash::success('migrazione modello eseguita con successo (senza modelsconfs)');
+//            Flash::success('migrazione modello eseguita con successo (senza modelsconfs)');
             return view('modelskeleton::migrations', compact([]));
 
         } else {
@@ -416,7 +419,7 @@ class ModelSkeletonController extends Controller
             $migation = $migrationValues;
             $model = $modelValues;
 
-            Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
+            //Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
             return view('modelskeleton::model3', compact([
                 'migration', 'model', 'modelsConfs',
                 'migrationValuesJson', 'modelValuesJson',
@@ -437,16 +440,18 @@ class ModelSkeletonController extends Controller
         $modelsConfsValues = $this->setModelsConfsValues($post);
 
 
-        $migrationService = new \App\Services\Migration($migrationValues, $modelValues, $modelsConfsValues);
+        $migrationService = new Migration($migrationValues, $modelValues, $modelsConfsValues);
 
         $migrationService->saveModel();
+        $migrationService->savePolicy($modelValues);
+        $migrationService->saveFoorm($migrationValues,$modelValues);
 
         if ($modelsConfsValues) {
             $migrationService->saveModelConf();
         }
 
 
-        Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
+        //Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
         return view('modelskeleton::migrations', compact([]));
 
     }

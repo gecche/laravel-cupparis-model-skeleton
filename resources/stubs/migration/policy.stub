@@ -21,7 +21,7 @@ class {{$modelClass}}Policy
     public function view(User $user, {{$modelClass}} $model)
     {
         //
-        if ($user->can('{{$viewPermission}}')) {
+        if ($user && $user->can('{{$viewPermission}}')) {
             return true;
         }
 
@@ -38,7 +38,7 @@ class {{$modelClass}}Policy
     public function create(User $user)
     {
         //
-        if ($user->can('{{$createPermission}}')) {
+        if ($user && $user->can('{{$createPermission}}')) {
             return true;
         }
 
@@ -49,13 +49,13 @@ class {{$modelClass}}Policy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Deal  $model
+     * @param  \App\Models\{{$modelClass}}  $model
      * @return mixed
      */
     public function update(User $user, {{$modelClass}} $model)
     {
         //
-        if ($user->can('{{$updatePermission}}')) {
+        if ($user && $user->can('{{$updatePermission}}')) {
             return true;
         }
 
@@ -66,13 +66,13 @@ class {{$modelClass}}Policy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Deal  $model
+     * @param  \App\Models\{{$modelClass}}  $model
      * @return mixed
      */
     public function delete(User $user, {{$modelClass}} $model)
     {
         //
-        if ($user->can('{{$deletePermission}}')) {
+        if ($user && $user->can('{{$deletePermission}}')) {
             return true;
         }
 
@@ -88,7 +88,7 @@ class {{$modelClass}}Policy
     public function listing(User $user)
     {
         //
-        if ($user->can('{{$listingPermission}}')) {
+        if ($user && $user->can('{{$listingPermission}}')) {
             return true;
         }
 
@@ -104,14 +104,11 @@ class {{$modelClass}}Policy
     public function acl(User $user, $builder)
     {
 
-        if ($user->can('{{$viewAllPermission}}')) {
-            return Gate::aclAll($builder);
+        if ($user && $user->can('view area')) {
+            return PolicyBuilder::all($builder,{{$modelClass}}::class);
         }
 
-        if ($user->can('{{$viewPermission}}')) {
-            //IMPLEMENT ACL POLICY HERE
-        }
+        return PolicyBuilder::none($builder,{{$modelClass}}::class);
 
-        return Gate::aclNone($builder);
     }
 }

@@ -46,10 +46,17 @@
 
 return [
 
+    'view' => [
+        'fields' => {{$fields}},
+    ],
     'search' => [
-
+        'fields' => {{$fieldsSearch}},
     ],
     'list' => [
+
+        'dependencies' => [
+            'search' => 'search',
+        ],
 
         'pagination' => [
             'per_page' => 20,

@@ -386,15 +386,16 @@ class Migration
         $stub = $this->files->get($this->getStub('policy'));
         $variables = [];
 
+        $modelNameForPermission = Str::snake($this->modelName);
 //        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',Str::snake($this->modelName));
 
         $permissions = [
-          'viewPermission' => 'view '.$this->modelName,
-            'viewAllPermission' => 'view all '.$this->modelName,
-            'updatePermission' => 'update '.$this->modelName,
-            'deletePermission' => 'delete '.$this->modelName,
-            'createPermission' => 'create '.$this->modelName,
-            'listingPermission' => 'listing '.$this->modelName,
+          'viewPermission' => 'view '.$modelNameForPermission,
+            'viewAllPermission' => 'view all '.$modelNameForPermission,
+            'updatePermission' => 'update '.$modelNameForPermission,
+            'deletePermission' => 'delete '.$modelNameForPermission,
+            'createPermission' => 'create '.$modelNameForPermission,
+            'listingPermission' => 'listing '.$modelNameForPermission,
         ];
 
         $stub = str_replace(
@@ -447,6 +448,49 @@ class Migration
             $campiFinali[$nomeCampo] = [];
         }
 
+        $campiFinaliSearch = [];
+        foreach ($campi as $nomeCampo => $campo) {
+
+
+            switch (Arr::get($campo,'tipo','string')) {
+                case 'string':
+                    $campoSearchArray = [
+                        'operator' => 'like',
+                    ];
+                break;
+                case 'enum':
+                    $campoSearchArray = [
+                        'operator' => 'like',
+                        'options' => 'dboptions',
+                    ];
+                    break;
+                case 'boolean':
+                    $campoSearchArray = [
+                        'operator' => 'like',
+                        'options' => 'boolean',
+                    ];
+                    break;
+                case 'integer':
+                    $relation = Arr::get($campo,'relazione_tabella');
+                    if ($relation) {
+                        $campoSearchArray = [
+                            'operator' => 'like',
+                            'options' => 'relation:'.$relation,
+                        ];
+                    } else {
+                        $campoSearchArray = [];
+                    }
+                    break;
+
+                default:
+                    $campoSearchArray = [];
+                break;
+            }
+
+            $campiFinaliSearch[$nomeCampo] = $campoSearchArray;
+        }
+
+
         $relazioniFinaliList = [];
         $relazioniFinaliEdit = [];
         foreach ($relazioni as $relazione) {
@@ -469,6 +513,9 @@ class Migration
 
         $stub = str_replace(
             '{{$fields}}', $this->var_export54($campiFinali), $stub
+        );
+        $stub = str_replace(
+            '{{$fieldsSearch}}', $this->var_export54($campiFinaliSearch), $stub
         );
         $stub = str_replace(
             '{{$relations}}', $this->var_export54($relazioniFinaliList), $stub
@@ -615,6 +662,9 @@ class Migration
 
         $stub = str_replace(
             '{{$modelClass}}', $this->modelName, $stub
+        );
+        $stub = str_replace(
+            '{{$snakeModelName}}', Str::snake($this->modelName), $stub
         );
 
         foreach ($variables as $variableKey => $variableValue) {
