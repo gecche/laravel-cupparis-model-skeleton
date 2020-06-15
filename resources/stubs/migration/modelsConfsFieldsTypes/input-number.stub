@@ -1,4 +1,2 @@
-                type : "input",
-                htmlAttributes: {
-                    "type":"number"
-                },
+                type : "w-input",
+                inputType: "number",

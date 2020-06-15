@@ -4,8 +4,8 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\{{$modelClass}};
+use Gecche\PolicyBuilder\Facades\PolicyBuilder;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Gate;
 
 class {{$modelClass}}Policy
 {
@@ -104,7 +104,7 @@ class {{$modelClass}}Policy
     public function acl(User $user, $builder)
     {
 
-        if ($user && $user->can('view area')) {
+        if ($user && $user->can('{{$viewPermission}}')) {
             return PolicyBuilder::all($builder,{{$modelClass}}::class);
         }
 

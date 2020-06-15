@@ -1,6 +1,3 @@
-                type : "checkbox",
-                metadata : {
-                    domainValuesOrder : null,
-                    domainValues : null,
-                },
-                htmlAttributes: {},
+                type : "w-checkbox",
+                //domainValues : [],
+                //domainValuesOrder : [],

@@ -1,7 +1,6 @@
-                type : "swap",
-                classTrue : "text-success",
-                classFalse : "text-danger",
-                title : "Attiva/Disattiva",
-                //domainValues : null,
-                mode : "edit",
-                htmlAttributes: {},
+                type : "w-swap2",
+                modelName : '{{$modelName}}',
+                //domainValues : {
+                //    1 : 'fa fa-circle text-danger',
+                //    0 : 'fa fa-circle text-success'
+                //}

@@ -392,7 +392,7 @@ class Migration
         $permissions = [
           'viewPermission' => 'view '.$modelNameForPermission,
             'viewAllPermission' => 'view all '.$modelNameForPermission,
-            'updatePermission' => 'update '.$modelNameForPermission,
+            'updatePermission' => 'edit '.$modelNameForPermission,
             'deletePermission' => 'delete '.$modelNameForPermission,
             'createPermission' => 'create '.$modelNameForPermission,
             'listingPermission' => 'listing '.$modelNameForPermission,
