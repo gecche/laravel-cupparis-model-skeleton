@@ -1,4 +1,4 @@
-                type : "w-select-2",
+                type : "w-b2-select2",
                 foormName : {{$foormName}}
                 viewType : {{$viewType}}
                 allowClear : true,
