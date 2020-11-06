@@ -13,7 +13,7 @@
         "laravel/framework": "^6.0",
         "gecche/laravel-cupparis-helpers": "2.0.*",
         "gecche/laravel-breeze": "2.0.*",
-        "gecche/laravel-cupparis-translation": "2.0.*",
+        "gecche/laravel-cupparis-translation": "v2.x-dev",
         "gecche/laravel-dbhelper": "2.0.*"
     },
     "require-dev": {
