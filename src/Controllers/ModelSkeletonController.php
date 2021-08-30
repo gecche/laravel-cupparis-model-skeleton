@@ -183,7 +183,7 @@ class ModelSkeletonController extends Controller
 
             $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
 
-            $migation = $migrationValues;
+            $migration = $migrationValues;
             $model = $modelValues;
 
             return view('modelskeleton::migration3', compact([
