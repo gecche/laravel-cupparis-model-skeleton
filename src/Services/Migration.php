@@ -112,7 +112,7 @@ class Migration
 
         $this->campi = Arr::get($this->migrationValues, 'campi', []);
 
-        $migrationCampi = $this->getIndent() . '$table->increments(\'id\');' . "\n";
+        $migrationCampi = $this->getIndent() . '$table->id();' . "\n";
 
         foreach ($this->campi as $key => $value) {
             $migrationCampi .= $this->getIndent();
@@ -816,7 +816,7 @@ class Migration
 
             $string .= "'" . $value . "' => [";
 
-            $string .= 'self::' . $relation_types[$key] . ", 'App\\Models\\";
+            $string .= 'self::' . $relation_types[$key] . ", 'related' => 'App\\Models\\";
 
             $string .= $relation_models[$key] . "'";
 

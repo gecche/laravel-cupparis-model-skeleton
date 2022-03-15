@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Gecche\Breeze\Breeze;
+use Gecche\Cupparis\App\Breeze\Breeze;
 
 /**
  * Breeze (Eloquent) model for {{$migrationTable}} table.
