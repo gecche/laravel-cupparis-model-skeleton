@@ -1,0 +1,33 @@
+<?php
+
+use Gecche\Breeze\Facades\Schema;
+use Gecche\Breeze\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+
+class {{$migrationClass}} extends Migration {
+
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('{{$migrationTable}}', function(Blueprint $table)
+		{
+            {{$migrationCampi}}
+		});
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::drop('{{$migrationTable}}');
+	}
+
+}

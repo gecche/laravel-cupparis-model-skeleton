@@ -1,0 +1,6 @@
+                type : "w-swap2",
+                modelName : '{{$modelName}}',
+                //domainValues : {
+                //    1 : 'fa fa-circle text-danger',
+                //    0 : 'fa fa-circle text-success'
+                //}
