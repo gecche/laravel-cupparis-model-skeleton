@@ -4,7 +4,7 @@ return [
 
     'namespace' => 'App\\Http\\Controllers',
 
-    'layout-view' => "layouts/cupparijs",
+    'layout-view' => "layouts/app",
 
     'default-models-dir' => 'Models',
 
