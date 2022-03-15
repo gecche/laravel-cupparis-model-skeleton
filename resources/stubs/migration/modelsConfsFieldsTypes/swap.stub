@@ -1,4 +1,4 @@
-                type : "w-swap2",
+                type : "w-swap",
                 modelName : '{{$modelName}}',
                 //domainValues : {
                 //    1 : 'fa fa-circle text-danger',

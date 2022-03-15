@@ -1,7 +1,8 @@
 
 var Model{{$modelClass}} = {
+    modelName : '{{$snakeModelName}}',
     search: {
-        modelName : '{{$snakeModelName}}'
+        modelName : '{{$snakeModelName}}',
         fields: [
 {{$searchFields}}
         ],
@@ -23,7 +24,7 @@ var Model{{$modelClass}} = {
 
     },
     list: {
-        modelName : '{{$snakeModelName}}'
+        modelName : '{{$snakeModelName}}',
         actions : [
             'action-insert',
             'action-edit',
@@ -42,7 +43,7 @@ var Model{{$modelClass}} = {
 
     },
     edit: {
-        modelName : '{{$snakeModelName}}'
+        modelName : '{{$snakeModelName}}',
         actions : ['action-save','action-back'],
         fields: [
 {{$editFields}}
