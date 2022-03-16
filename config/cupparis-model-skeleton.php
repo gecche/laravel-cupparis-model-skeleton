@@ -11,10 +11,10 @@ return [
     'models_namespace' => 'App\\Models\\',
 
     'modelsconf' => [
-        'templatePathJs' => '/js/',
+        'templatePathJs' => '/admin/js/',
         'single' => false,
         'singleModelsConfsFile' => 'ModelsConfs.js',
-        'subModelsConfsPath' => 'ModelsConfs/',
+        'subModelsConfsPath' => 'ModelConfs/',
     ],
 
     'langs' => [
