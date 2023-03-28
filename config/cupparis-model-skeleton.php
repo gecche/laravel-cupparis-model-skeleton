@@ -4,17 +4,17 @@ return [
 
     'namespace' => 'App\\Http\\Controllers',
 
-    'layout-view' => "layouts/cupparijs",
+    'layout-view' => "layouts/app",
 
     'default-models-dir' => 'Models',
 
     'models_namespace' => 'App\\Models\\',
 
     'modelsconf' => [
-        'templatePathJs' => '/js/',
+        'templatePathJs' => '/admin/js/',
         'single' => false,
         'singleModelsConfsFile' => 'ModelsConfs.js',
-        'subModelsConfsPath' => 'ModelsConfs/',
+        'subModelsConfsPath' => 'ModelConfs/',
     ],
 
     'langs' => [

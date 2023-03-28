@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 
 
-
 class Migration
 {
 
@@ -59,11 +58,11 @@ class Migration
     public function __construct($migrationValues = [], $modelValues = [], $modelsConfsValues = [], $files = null)
     {
 
-        $skeletonConfig = Config::get('cupparis-model-skeleton',[]);
+        $skeletonConfig = Config::get('cupparis-model-skeleton', []);
 
-        $this->langs = Arr::get($skeletonConfig,'langs',[]);
-        $this->stubs = Arr::get($skeletonConfig,'stubs',[]);
-        $this->configModelsListEntries = Arr::get($skeletonConfig,'config_models_list_entries',[]);
+        $this->langs = Arr::get($skeletonConfig, 'langs', []);
+        $this->stubs = Arr::get($skeletonConfig, 'stubs', []);
+        $this->configModelsListEntries = Arr::get($skeletonConfig, 'config_models_list_entries', []);
 
 
         $this->migrationValues = $migrationValues;
@@ -87,7 +86,7 @@ class Migration
         // TODO: Implement getStub() method.
     }
 
-    protected function getStubInPath($type = 'input',$path = 'fieldsTypesPath',$ext = 'stub')
+    protected function getStubInPath($type = 'input', $path = 'fieldsTypesPath', $ext = 'stub')
     {
         return base_path($this->stubs[$path] . $type . '.' . $ext);
         // TODO: Implement getStub() method.
@@ -104,7 +103,7 @@ class Migration
             '{{$migrationTable}}', $this->migrationTable, $stub
         );
 
-        $migrationClass = 'Create' . Str::studly($this->migrationTable)  . 'Table';
+        $migrationClass = 'Create' . Str::studly($this->migrationTable) . 'Table';
 
         $stub = str_replace(
             '{{$migrationClass}}', $migrationClass, $stub
@@ -112,7 +111,7 @@ class Migration
 
         $this->campi = Arr::get($this->migrationValues, 'campi', []);
 
-        $migrationCampi = $this->getIndent() . '$table->increments(\'id\');' . "\n";
+        $migrationCampi = $this->getIndent() . '$table->id();' . "\n";
 
         foreach ($this->campi as $key => $value) {
             $migrationCampi .= $this->getIndent();
@@ -202,7 +201,7 @@ class Migration
                 break;
         }
 
-        $infoString = rtrim($infoString,', ');
+        $infoString = rtrim($infoString, ', ');
 
         $fieldString .= $type . '(\'' . $fieldName . '\'' . $infoString . ')';
 
@@ -343,7 +342,6 @@ class Migration
         $this->files->put($filename, $stub);
 
 
-
         /*
          * SALVO I FIELDS NEL LANG
          */
@@ -366,15 +364,13 @@ class Migration
 
         foreach ($this->configModelsListEntries as $configFile => $configEntries) {
             $configEntries = Arr::wrap($configEntries);
-            $this->saveConfigFile($configFile.'.php', $configStub, 'listing', ['entries' => $configEntries]);
+            $this->saveConfigFile($configFile . '.php', $configStub, 'listing', ['entries' => $configEntries]);
         }
 
     }
 
     public function savePolicy($modelValues = [])
     {
-
-
 
 
         $filename = base_path("app/Policies/" . $this->modelName . 'Policy.php');
@@ -390,12 +386,12 @@ class Migration
 //        $modelPlural = Arr::get($modelValues,'lang_modello_plurale',Str::snake($this->modelName));
 
         $permissions = [
-          'viewPermission' => 'view '.$modelNameForPermission,
-            'viewAllPermission' => 'view all '.$modelNameForPermission,
-            'updatePermission' => 'edit '.$modelNameForPermission,
-            'deletePermission' => 'delete '.$modelNameForPermission,
-            'createPermission' => 'create '.$modelNameForPermission,
-            'listingPermission' => 'listing '.$modelNameForPermission,
+            'viewPermission' => 'view ' . $modelNameForPermission,
+            'viewAllPermission' => 'view all ' . $modelNameForPermission,
+            'updatePermission' => 'edit ' . $modelNameForPermission,
+            'deletePermission' => 'delete ' . $modelNameForPermission,
+            'createPermission' => 'create ' . $modelNameForPermission,
+            'listingPermission' => 'listing ' . $modelNameForPermission,
         ];
 
         $stub = str_replace(
@@ -423,8 +419,6 @@ class Migration
     {
 
 
-
-
         $filename = base_path("config/foorms/" . Str::snake($this->modelName) . '.php');
 
         if (file_exists($filename)) {
@@ -434,13 +428,16 @@ class Migration
         $stub = $this->files->get($this->getStub('foorm'));
 
         Log::info("FOORM::: ");
-        Log::info(print_r($migrationValues,true));
-        Log::info(print_r($modelValues,true));
+        Log::info(print_r($migrationValues, true));
+        Log::info(print_r($modelValues, true));
 
-        $campi = Arr::get($migrationValues,'campi',[]);
+        $campi = Arr::get($migrationValues, 'campi', []);
         unset($campi['timestamps']);
         unset($campi['ownerships']);
-        $relazioni = Arr::get($modelValues,'relation_names',[]);
+        $campi['id'] = [
+            'tipo' => 'integer',
+        ];
+        $relazioni = Arr::get($modelValues, 'relation_names', []);
 
 
         $campiFinali = [];
@@ -452,30 +449,30 @@ class Migration
         foreach ($campi as $nomeCampo => $campo) {
 
 
-            switch (Arr::get($campo,'tipo','string')) {
+            switch (Arr::get($campo, 'tipo', 'string')) {
                 case 'string':
                     $campoSearchArray = [
                         'operator' => 'like',
                     ];
-                break;
+                    break;
                 case 'enum':
                     $campoSearchArray = [
-                        'operator' => 'like',
+                        'operator' => '=',
                         'options' => 'dboptions',
                     ];
                     break;
                 case 'boolean':
                     $campoSearchArray = [
-                        'operator' => 'like',
+                        'operator' => '=',
                         'options' => 'boolean',
                     ];
                     break;
                 case 'integer':
-                    $relation = Arr::get($campo,'relazione_tabella');
+                    $relation = Arr::get($campo, 'relazione_tabella');
                     if ($relation) {
                         $campoSearchArray = [
-                            'operator' => 'like',
-                            'options' => 'relation:'.$relation,
+                            'operator' => '=',
+                            'options' => 'relation:' . $relation,
                         ];
                     } else {
                         $campoSearchArray = [];
@@ -484,7 +481,7 @@ class Migration
 
                 default:
                     $campoSearchArray = [];
-                break;
+                    break;
             }
 
             $campiFinaliSearch[$nomeCampo] = $campoSearchArray;
@@ -555,10 +552,10 @@ class Migration
         if (!$this->files->exists($filename)) {
             $parentDir = $this->files->dirname($filename);
             if (!$this->files->isDirectory($parentDir)) {
-                $this->files->makeDirectory($parentDir,0755,true);
+                $this->files->makeDirectory($parentDir, 0755, true);
             }
 
-            $this->files->put($filename,'<?php return []; ?>');
+            $this->files->put($filename, '<?php return []; ?>');
         }
 
 
@@ -566,7 +563,7 @@ class Migration
 
         $methodName = 'setConfigFile' . Str::studly($type);
 
-        $finalLangs = call_user_func_array([$this,$methodName],[$langs,$params]);
+        $finalLangs = call_user_func_array([$this, $methodName], [$langs, $params]);
 
         $modelConfigStub = str_replace(
             '{{$configArray}}', var_export($finalLangs, true), $configStub
@@ -576,7 +573,8 @@ class Migration
 
     }
 
-    protected function setConfigFileModel($langs,$params = []) {
+    protected function setConfigFileModel($langs, $params = [])
+    {
         $modelName = Str::snake($this->modelName);
         if (!array_key_exists($modelName, $langs)) {
             $singolare = Arr::get($this->modelValues, 'lang_modello_singolare', $modelName);
@@ -590,11 +588,13 @@ class Migration
         return $langs;
 
     }
-    protected function setConfigFileFields($langs,$params = []) {
+
+    protected function setConfigFileFields($langs, $params = [])
+    {
 
         foreach ($this->campi as $field => $fieldValue) {
 
-            if (in_array($field,['timestamps','ownerships'])) {
+            if (in_array($field, ['timestamps', 'ownerships'])) {
                 continue;
             }
 
@@ -610,15 +610,15 @@ class Migration
 
     }
 
-    protected function setConfigFileListing($config,$params = []) {
-
+    protected function setConfigFileListing($config, $params = [])
+    {
 
 
         $modelName = Str::snake($this->modelName);
 
-        $entries = Arr::get($params,'entries',[]);
+        $entries = Arr::get($params, 'entries', []);
         foreach ($entries as $entry) {
-            Log::info("LISTING 1:: ".$entry);
+            Log::info("LISTING 1:: " . $entry);
             $routes = Arr::get($config, $entry, []);
             if (!array_key_exists($modelName, $routes)) {
                 $routes[] = $modelName;
@@ -816,7 +816,7 @@ class Migration
 
             $string .= "'" . $value . "' => [";
 
-            $string .= 'self::' . $relation_types[$key] . ", 'App\\Models\\";
+            $string .= 'self::' . $relation_types[$key] . ", 'related' => 'App\\Models\\";
 
             $string .= $relation_models[$key] . "'";
 
@@ -844,7 +844,8 @@ class Migration
     }
 
 
-    public function saveFieldsTranslations($fields) {
+    public function saveFieldsTranslations($fields)
+    {
         $this->campi = $fields;
         $configStubName = $this->getStub('config');
         $configStub = $this->files->get($configStubName);
@@ -887,7 +888,8 @@ class Migration
 //        }
 //    }
 
-    protected function var_export54($var, $indent="") {
+    protected function var_export54($var, $indent = "")
+    {
         switch (gettype($var)) {
             case "string":
                 return '"' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '"';
