@@ -222,7 +222,7 @@ class ModelSkeletonController extends Controller
         }
 
 //        Flash::success('migrazione eseguita con successo (con modelsconfs)');
-        return view('modelskeleton::migrations', compact([]));
+        return view('modelskeleton::index');
 
     }
 

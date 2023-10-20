@@ -35,6 +35,7 @@
                             Creazione di tabella, modello e modelconf
                         </div>
                     </div>
+                    <hr/>
                     <div class="panel panel-warning col col-sm-4 noborder">
                         <div class="panel-heading">
                             <a href="/cupparis/modelskeleton/model">
@@ -45,16 +46,16 @@
                             Creazione del modello e del modelconf a partire da una tabella già presente nel db
                         </div>
                     </div>
-                    <div class="panel panel-danger col col-sm-4 noborder">
-                        <div class="panel-heading">
-                            <a href="/cupparis/modelskeleton/modelconf">
-                                Solo modelconf
-                            </a>
-                        </div>
-                        <div class="panel-body">
-                            Creazione solo del modelconf a partire dal modello
-                        </div>
-                    </div>
+{{--                    <div class="panel panel-danger col col-sm-4 noborder">--}}
+{{--                        <div class="panel-heading">--}}
+{{--                            <a href="/cupparis/modelskeleton/modelconf">--}}
+{{--                                Solo modelconf--}}
+{{--                            </a>--}}
+{{--                        </div>--}}
+{{--                        <div class="panel-body">--}}
+{{--                            Creazione solo del modelconf a partire dal modello--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                 </div>
             </div>
         </div>
