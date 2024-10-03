@@ -4,17 +4,18 @@ return [
 
     'namespace' => 'App\\Http\\Controllers',
 
-    'layout-view' => "layouts/app",
+    'layout-view' => "app",
 
     'default-models-dir' => 'Models',
 
     'models_namespace' => 'App\\Models\\',
+    'policies_namespace' => 'App\\Policies\\',
 
     'modelsconf' => [
-        'templatePathJs' => '/admin/js/',
+        'templatePathJs' => '/roma-vue-4.0.0/src/data/modelsConfs/app/',
         'single' => false,
         'singleModelsConfsFile' => 'ModelsConfs.js',
-        'subModelsConfsPath' => 'ModelConfs/',
+        'subModelsConfsPath' => '',
     ],
 
     'langs' => [
@@ -36,6 +37,12 @@ return [
         'foorm' => 'stubs/migration/foorm.stub',
     ],
 
-    'config_models_list_entries' => ['json_rest' => 'models'], //config entries to be updated with new models
+
+    'cupparis-app-file' => 'cupparis-app.json',
+
+//    'config_models_list_entries' => [
+//        'json_rest' => 'models'
+//    ],
+    //config entries to be updated with new models
     // file => entry|entries stirng or arry of strings (dot notation)
 ];

@@ -1,6 +1,18 @@
-                type : "w-b2-select2",
-                foormName : {{$foormName}}
-                viewType : {{$viewType}}
-                allowClear : true,
-                //theme : 'bootstrap4',
-                fields : [],
+                type : "w-autocomplete",
+                foormName : {{$foormName}},
+                viewType : {{$viewType}},
+                labelFields : [
+
+                ],
+                clearButton : true,
+                extraBind: {
+                   //'placeholder': "Digita le iniziali...",
+                   //'dropdown': true,
+                   //'option-value': 'id',
+                   //'option-label': function (obj) {
+                   //    if (!obj.id) {
+                   //        return null;
+                   //    }
+                   //    return obj.id + ' (testo)';
+                   //},
+                },
