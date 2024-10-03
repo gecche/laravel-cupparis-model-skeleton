@@ -5,6 +5,7 @@ return [
     'namespace' => 'App\\Http\\Controllers',
 
     'layout-view' => "app",
+    //'layout-view' => "layouts/modelskeleton",
 
     'default-models-dir' => 'Models',
 
