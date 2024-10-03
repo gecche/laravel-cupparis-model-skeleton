@@ -718,6 +718,19 @@ class Migration
         $this->files->append($filename, $stub);
 
 
+        //AGGIORNO INDEX.JS
+        $jsModelName = "Model".$this->modelName;
+        $indexFileJsName = resource_path(Arr::get($this->config,'modelsconf-index'));
+        $indexJsFile = $this->files->get($indexFileJsName);
+
+        $importString = "\nimport " . $jsModelName . " from './" . $jsModelName . ".js';";
+
+        $indexJsFile = str_replace("//IMPORT START","//IMPORT START".$importString,$indexJsFile);
+        $installString = "\n\t\tcs.CrudVars.modelConfs." . $jsModelName . " = " . $jsModelName . ";";
+        $indexJsFile = str_replace("//INSTALL START","//INSTALL START".$installString,$indexJsFile);
+
+        $this->files->put($indexFileJsName,$indexJsFile);
+
     }
 
     protected function implodeArray($values, $keys = null, $apici = true, $newline = false, $sep = '=>')
