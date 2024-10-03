@@ -12,6 +12,7 @@ return [
     'models_namespace' => 'App\\Models\\',
     'policies_namespace' => 'App\\Policies\\',
 
+    'modelsconf-index' => '/roma-vue-4.0.0/src/data/modelsConfs/app/index.js',
     'modelsconf' => [
         'templatePathJs' => '/roma-vue-4.0.0/src/data/modelsConfs/app/',
         'single' => false,
