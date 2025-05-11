@@ -1,5 +1,5 @@
 
-var Model{{$modelClass}} = {
+export default {
     modelName : '{{$snakeModelName}}',
     search: {
         modelName : '{{$snakeModelName}}',

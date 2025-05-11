@@ -21,6 +21,8 @@ class Migration
      * rm -f app/Models/Prova.php;rm -f app/Models/Relations/Prova*.php;rm -f app/Policies/ProvaPolicy.php;rm -f public/js/ModelsConfs/M_Prova.php;rm -f database/migrations/*_prove_*;
      */
 
+
+    protected $config = [];
     protected $migrationValues = [];
     protected $modelValues = [];
     protected $modelsConfsValues = [];
@@ -36,6 +38,8 @@ class Migration
 
 
     protected $configModelsListEntries = [];
+
+    protected $cupparisAppJsonFile = null;
 
 //    protected $aclModels = [];
 
@@ -58,11 +62,11 @@ class Migration
     public function __construct($migrationValues = [], $modelValues = [], $modelsConfsValues = [], $files = null)
     {
 
-        $skeletonConfig = Config::get('cupparis-model-skeleton', []);
+        $this->config = Config::get('cupparis-model-skeleton', []);
 
-        $this->langs = Arr::get($skeletonConfig, 'langs', []);
-        $this->stubs = Arr::get($skeletonConfig, 'stubs', []);
-        $this->configModelsListEntries = Arr::get($skeletonConfig, 'config_models_list_entries', []);
+        $this->langs = Arr::get($this->config, 'langs', []);
+        $this->stubs = Arr::get($this->config, 'stubs', []);
+        $this->configModelsListEntries = Arr::get($this->config, 'config_models_list_entries', []);
 
 
         $this->migrationValues = $migrationValues;
@@ -78,6 +82,7 @@ class Migration
         } else {
             $this->files = $files;
         }
+        $this->cupparisAppJsonFile = base_path(Arr::get($this->config,'cupparis-app-file','cupparis-app.json'));
     }
 
     protected function getStub($type = 'migration')
@@ -362,10 +367,44 @@ class Migration
          * USO GLI STESSI METODI DEI LANGS
          */
 
-        foreach ($this->configModelsListEntries as $configFile => $configEntries) {
-            $configEntries = Arr::wrap($configEntries);
-            $this->saveConfigFile($configFile . '.php', $configStub, 'listing', ['entries' => $configEntries]);
+        $cupparisAppJson = json_decode($this->files->get($this->cupparisAppJsonFile),true);
+
+        $jsonFoorms = Arr::get($cupparisAppJson,'foorm',[]);
+        $jsonEntities = Arr::get($jsonFoorms,'entities',[]);
+        $snakeModelName = Str::snake($this->modelName);
+        if (!in_array($snakeModelName,$jsonEntities)) {
+            $jsonEntities[] = $snakeModelName;
         }
+        $jsonFoorms['entities'] = $jsonEntities;
+        $cupparisAppJson['foorm'] = $jsonFoorms;
+
+        $jsonPermissions = Arr::get($cupparisAppJson,'permissions',[]);
+        $jsonPermissionModels = Arr::get($jsonPermissions,'models',[]);
+        if (!in_array($snakeModelName,$jsonPermissionModels)) {
+            $jsonPermissionModels[] = $snakeModelName;
+        }
+        $jsonPermissions['models'] = $jsonPermissionModels;
+        $cupparisAppJson['permissions'] = $jsonPermissions;
+
+        $jsonPolicies = Arr::get($cupparisAppJson,'policies',[]);
+        $jsonPoliciesModels = Arr::get($jsonPolicies,'models',[]);
+        if (!in_array($snakeModelName,$jsonPoliciesModels)) {
+            $modelsNamespace ='\\' . ltrim(Arr::get($this->config,'models_namespace','App\\Models\\'),"\\");
+            $policiesNamespace ='\\' . ltrim(Arr::get($this->config,'policies_namespace','App\\Policies\\'),"\\");
+            $fullModelName = $modelsNamespace . $this->modelName;
+            $fullPolicyName = $policiesNamespace . $this->modelName . 'Policy';
+
+            $jsonPoliciesModels[$fullModelName] = $fullPolicyName;
+        }
+        $jsonPolicies['models'] = $jsonPoliciesModels;
+        $cupparisAppJson['policies'] = $jsonPolicies;
+
+        $this->files->put($this->cupparisAppJsonFile,json_encode($cupparisAppJson));
+
+//        foreach ($this->configModelsListEntries as $configFile => $configEntries) {
+//            $configEntries = Arr::wrap($configEntries);
+//            $this->saveConfigFile($configFile . '.php', $configStub, 'listing', ['entries' => $configEntries]);
+//        }
 
     }
 
@@ -639,7 +678,7 @@ class Migration
 
         $modelsConfsFileName = Arr::get($this->modelsConfsValues, 'nome_file_modelsconfs', '');
 
-        $filename = public_path($modelsConfsFileName);
+        $filename = resource_path($modelsConfsFileName);
 
         $stub = $this->files->get($this->getStub('modelconf'));
         $variables = [];
@@ -678,6 +717,19 @@ class Migration
 
         $this->files->append($filename, $stub);
 
+
+        //AGGIORNO INDEX.JS
+        $jsModelName = "Model".$this->modelName;
+        $indexFileJsName = resource_path(Arr::get($this->config,'modelsconf-index'));
+        $indexJsFile = $this->files->get($indexFileJsName);
+
+        $importString = "\nimport " . $jsModelName . " from './" . $jsModelName . ".js';";
+
+        $indexJsFile = str_replace("//IMPORT START","//IMPORT START".$importString,$indexJsFile);
+        $installString = "\n\t\tcs.CrudVars.modelConfs." . $jsModelName . " = " . $jsModelName . ";";
+        $indexJsFile = str_replace("//INSTALL START","//INSTALL START".$installString,$indexJsFile);
+
+        $this->files->put($indexFileJsName,$indexJsFile);
 
     }
 

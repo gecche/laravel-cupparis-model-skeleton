@@ -635,7 +635,7 @@ class ModelSkeletonController extends Controller
 
         $nomeModello = Str::studly(Arr::get($modelValues,'nome_modello',''));
 
-        return $relativePath . 'M_'.$nomeModello . '.js';
+        return $relativePath . 'Model'.$nomeModello . '.js';
 
     }
 
