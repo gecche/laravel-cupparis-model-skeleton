@@ -113,17 +113,25 @@ class ModelSkeletonController extends Controller
             'unique' => 'UNIQUE',
         ];
         $migration['options']['timestamps'] = [
-            'no' => 'No',
             'nullable' => 'Nullable',
+            'no' => 'No',
             'si' => 'Sì',
         ];
         $migration['options']['ownerships'] = [
-            'no' => 'No',
             'nullable' => 'Nullable',
+            'no' => 'No',
             'si' => 'Sì',
         ];
 
         $model = $this->_getModelInfo($migration['nome_tabella'], $migration['campi']);
+        $model['options']['hasFoto'] = [
+            'no' => 'No',
+            'si' => 'Sì',
+        ];
+        $model['options']['hasAttachments'] = [
+            'no' => 'No',
+            'si' => 'Sì',
+        ];
         $model['options']['tables'] = ["" => " "] + $tables;
 
         $modelsConfs = [];
@@ -360,6 +368,14 @@ class ModelSkeletonController extends Controller
 
 
         $model = $this->_getModelInfo($migration['nome_tabella'], $migration['campi']);
+        $model['options']['hasFoto'] = [
+            'no' => 'No',
+            'si' => 'Sì',
+        ];
+        $model['options']['hasAttachments'] = [
+            'no' => 'No',
+            'si' => 'Sì',
+        ];
         $model['options']['tables'] = ["" => " "] + $tables;
 
         $modelsConfs['options']['crea_modelsconfs'] = [
@@ -416,7 +432,7 @@ class ModelSkeletonController extends Controller
 
             $modelsConfs = $this->_getModelsConfsInfo($migrationValues, $modelValues);
 
-            $migation = $migrationValues;
+            $migration = $migrationValues;
             $model = $modelValues;
 
             //Flash::success('migrazione modello eseguita con successo (con modelsconfs)');
@@ -471,6 +487,8 @@ class ModelSkeletonController extends Controller
                 'columns_for_default_order' => Arr::get($post, 'columns_for_default_order', []),
                 'columns_for_default_order_direction' => Arr::get($post, 'columns_for_default_order_direction', []),
                 'traits' => Arr::get($post, 'traits', []),
+                'hasFoto' => Arr::get($post, 'hasFoto', []),
+                'hasAttachments' => Arr::get($post, 'hasAttachments', []),
             ];
 
             $relation_names = Arr::get($post, 'relation_names', []);
