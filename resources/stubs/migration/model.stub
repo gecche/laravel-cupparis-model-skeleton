@@ -27,6 +27,8 @@ class {{$modelClass}} extends Breeze
 
     public static $relationsData = [
 
+{{$relationAttachments}}
+{{$relationFoto}}
 {{$relationsData}}
 
 //        'belongsto' => array(self::BELONGS_TO, {{$modelClass}}::class, 'foreignKey' => '<FOREIGNKEYNAME>'),

@@ -326,8 +326,8 @@ class Migration
 
         $variables['relationsData'] = $this->getRelationsDataString($relation_names, $relation_types, $relation_models,
             $relation_tables, $relation_foreignkey, $relation_otherkey, $relation_pivotkey);
-        $variables['relationFoto'] = $hasFoto ? "'fotos' => [self::MORPH_MANY, 'related' => Foto::class, 'name' => 'mediable'],'" : '';
-        $variables['relationAttachments'] = $hasAttachments ? "'attachments' => [self::MORPH_MANY, 'related' => Attachment::class, 'name' => 'mediable'],'" : '';
+        $variables['relationFoto'] = $hasFoto ? "'fotos' => [self::MORPH_MANY, 'related' => Foto::class, 'name' => 'mediable']," : '';
+        $variables['relationAttachments'] = $hasAttachments ? "'attachments' => [self::MORPH_MANY, 'related' => Attachment::class, 'name' => 'mediable']," : '';
 
 
         $variables['timestamps'] = $this->timestamps ? 'true' : 'false';
@@ -750,6 +750,7 @@ class Migration
             $editValues['type'][] = 'fotosEdit';
             $listValues['nome'][] = 'fotos';
             $listValues['type'][] = 'images';
+            $listValues['order'][] = 'no';
         }
         if (Arr::get($this->modelValues,'hasAttachments')) {
             $editValues['nome'][] = 'attachments';
