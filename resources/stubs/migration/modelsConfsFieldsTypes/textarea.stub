@@ -1,2 +1,1 @@
-                type : "textarea",
-                htmlAttributes: {},
+                type : "w-textarea",

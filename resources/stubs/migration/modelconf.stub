@@ -3,28 +3,22 @@ export default {
     modelName : '{{$snakeModelName}}',
     search: {
         modelName : '{{$snakeModelName}}',
+        type : "v-search",
         fields: [
-{{$searchFields}}
+            {{$searchFields}}
         ],
         fieldsConfig: {
-{{$searchFieldsType}}
+            {{$searchFieldsType}}
         },
-        // groups: {
-        //     'g0': {
-        //         fields: [
-        //
-        //         ],
-        //     },
-        //     'g1': {
-        //         fields: [
-        //
-        //         ],
-        //     }
-        // },
+        advancedFields: [
+
+        ],
 
     },
+
     list: {
         modelName : '{{$snakeModelName}}',
+        type: "v-list",
         actions : [
             'action-insert',
             'action-edit',
@@ -32,24 +26,34 @@ export default {
             'action-delete-selected',
         ],
         fields: [
-{{$listFields}}
+            'id',
+            {{$listFields}}
         ],
         fieldsConfig: {
-{{$listFieldsType}}
+            id: {
+                type: 'w-hidden',
+            },
+            {{$listFieldsType}}
         },
         orderFields : {
-{{$listOrderFields}}
+            {{$listOrderFields}}
         }
 
     },
+
     edit: {
         modelName : '{{$snakeModelName}}',
+        type: "v-edit",
         actions : ['action-save','action-back'],
         fields: [
-{{$editFields}}
+            'id',
+            {{$editFields}}
         ],
         fieldsConfig: {
-{{$editFieldsType}}
+            id: {
+                type: 'w-hidden',
+            },
+            {{$editFieldsType}}
         }
 
     },
