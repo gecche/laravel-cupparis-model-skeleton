@@ -487,8 +487,8 @@ class ModelSkeletonController extends Controller
                 'columns_for_default_order' => Arr::get($post, 'columns_for_default_order', []),
                 'columns_for_default_order_direction' => Arr::get($post, 'columns_for_default_order_direction', []),
                 'traits' => Arr::get($post, 'traits', []),
-                'hasFoto' => Arr::get($post, 'hasFoto', []),
-                'hasAttachments' => Arr::get($post, 'hasAttachments', []),
+                'hasFoto' => Arr::get($post, 'hasFoto', 'no'),
+                'hasAttachments' => Arr::get($post, 'hasAttachments', 'no'),
             ];
 
             $relation_names = Arr::get($post, 'relation_names', []);

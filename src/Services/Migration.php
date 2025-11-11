@@ -298,8 +298,8 @@ class Migration
         $columns_for_default_order_direction = Arr::get($this->modelValues, 'columns_for_default_order_direction', []);
         $columns_for_autocomplete = Arr::get($this->modelValues, 'columns_for_autocomplete', []);
 
-        $hasFoto = Arr::get($this->modelValues, 'hasFoto', []);
-        $hasAttachments = Arr::get($this->modelValues, 'hasAttachments', []);
+        $hasFoto = (Arr::get($this->modelValues, 'hasFoto', 'no') == 'si') ? 1 : 0;
+        $hasAttachments = (Arr::get($this->modelValues, 'hasAttachments', 'no') == 'si') ? 1 : 0;
 
 //        $this->setApici($variables['columnsForSelectList']);
 
@@ -474,8 +474,8 @@ class Migration
         Log::info(print_r($migrationValues, true));
         Log::info(print_r($modelValues, true));
 
-        $hasFoto = Arr::get($this->modelValues,'hasFoto');
-        $hasAttachments = Arr::get($this->modelValues,'hasAttachments');
+        $hasFoto = (Arr::get($this->modelValues,'hasFoto','no') == 'si') ? 1 : 0;
+        $hasAttachments = (Arr::get($this->modelValues,'hasAttachments','no') == 'si') ? 1 : 0;
 
         $campi = Arr::get($migrationValues, 'campi', []);
         unset($campi['timestamps']);
@@ -745,14 +745,14 @@ class Migration
         $listValues = Arr::get($this->modelsConfsValues, 'list', []);
         $editValues = Arr::get($this->modelsConfsValues, 'edit', []);
 
-        if (Arr::get($this->modelValues,'hasFoto')) {
+        if (Arr::get($this->modelValues,'hasFoto') == 'si') {
             $editValues['nome'][] = 'fotos';
             $editValues['type'][] = 'fotosEdit';
             $listValues['nome'][] = 'fotos';
             $listValues['type'][] = 'images';
             $listValues['order'][] = 'no';
         }
-        if (Arr::get($this->modelValues,'hasAttachments')) {
+        if (Arr::get($this->modelValues,'hasAttachments') == 'si') {
             $editValues['nome'][] = 'attachments';
             $editValues['type'][] = 'attachmentsEdit';
         }
