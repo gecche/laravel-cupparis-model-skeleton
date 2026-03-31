@@ -1,47 +1,95 @@
 {
-    "name": "gecche/laravel-cupparis-model-skeleton",
-    "description": "Utility per la creazione semiautomatica di migrazione, modello e modelconf",
-    "keywords": ["laravel", "cupparis"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Giacomo Terreni",
-            "email": "giacomo.terreni@gmail.com"
-        }
-    ],
-    "require": {
-        "gecche/laravel-cupparis-app": "^12.0"
-    },
-    "require-dev": {
-        "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^11.5",
-        "orchestra/testbench": "^10.0",
-        "codedungeon/phpunit-result-printer": "^0.1.0"
-    },
-    "autoload": {
-        "classmap": [
-
-        ],
-        "psr-4": {
-            "Gecche\\Cupparis\\ModelSkeleton\\": "src"
-        },
-        "files": [
-
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-
-        }
-    },
-    "scripts": {
-        "test": "phpunit"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Gecche\\Cupparis\\ModelSkeleton\\ModelSkeletonServiceProvider"
-            ]
-        }
+  "name": "gecche/laravel-cupparis-model-skeleton",
+  "description": "Utility per la creazione semiautomatica di migrazione, modello e modelconf",
+  "keywords": [
+    "laravel",
+    "cupparis"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Giacomo Terreni",
+      "email": "giacomo.terreni@gmail.com"
     }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/imagecache"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-dbhelper"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-breeze"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-foorm"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-helpers"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-queue"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-menus"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-datafile"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-datafile-json"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-localization"
+    },
+    {
+      "type": "vcs",
+      "url": "http://github.com/gecche/laravel-cupparis-app"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "gecche/laravel-cupparis-app": "v13.x-dev"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.6",
+    "phpunit/phpunit": "^12.0",
+    "orchestra/testbench": "^11.0",
+    "codedungeon/phpunit-result-printer": "^0.1.0"
+  },
+  "autoload": {
+    "classmap": [
+    ],
+    "psr-4": {
+      "Gecche\\Cupparis\\ModelSkeleton\\": "src"
+    },
+    "files": [
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Gecche\\Cupparis\\ModelSkeleton\\ModelSkeletonServiceProvider"
+      ]
+    }
+  }
 }
