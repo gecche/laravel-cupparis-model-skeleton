@@ -1,2 +1,1 @@
-                type : "texthtml",
-                htmlAttributes: {},
+                type : "w-editor",

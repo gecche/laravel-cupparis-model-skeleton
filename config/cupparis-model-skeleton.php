@@ -4,17 +4,17 @@ return [
 
     'namespace' => 'App\\Http\\Controllers',
 
-    'layout-view' => "app",
-    //'layout-view' => "layouts/modelskeleton",
+    //'layout-view' => "app",
+    'layout-view' => "modelskeleton::layouts/modelskeleton",
 
     'default-models-dir' => 'Models',
 
     'models_namespace' => 'App\\Models\\',
     'policies_namespace' => 'App\\Policies\\',
 
-    'modelsconf-index' => '/roma-vue-4.0.0/src/data/modelsConfs/app/index.js',
+    'modelsconf-index' => '/vue-application-v4/src/application/ModelConfs/index.js',
     'modelsconf' => [
-        'templatePathJs' => '/roma-vue-4.0.0/src/data/modelsConfs/app/',
+        'templatePathJs' => '/vue-application-v4/src/application/ModelConfs/',
         'single' => false,
         'singleModelsConfsFile' => 'ModelsConfs.js',
         'subModelsConfsPath' => '',

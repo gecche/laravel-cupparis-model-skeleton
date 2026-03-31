@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "gecche/laravel-cupparis-app": "^11.0"
+        "gecche/laravel-cupparis-app": "^12.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",

@@ -152,6 +152,30 @@
                         <td colspan="7">Relazioni</td>
                     </tr>
                     <tr>
+                        <td>Foto</td>
+                        <td>
+                            <select class="form-control" name="hasFoto">
+                                @foreach ($model['options']['hasFoto'] as $optionKey => $optionValue)
+                                    <option value="{{$optionKey}}">
+                                        {!! $optionKey !!}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Attachments</td>
+                        <td>
+                            <select class="form-control" name="hasAttachments">
+                                @foreach ($model['options']['hasAttachments'] as $optionKey => $optionValue)
+                                    <option value="{{$optionKey}}">
+                                        {!! $optionKey !!}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Nome</td>
                         <td>Tipo</td>
                         <td>Modello</td>

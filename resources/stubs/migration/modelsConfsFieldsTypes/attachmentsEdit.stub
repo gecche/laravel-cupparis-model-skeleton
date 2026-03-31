@@ -1,0 +1,42 @@
+                type: 'w-hasmany',
+                layout: {
+                    'colClass': 'col-span-12',
+                    labelPosition: 'none',
+                },
+                label: 'Allegati',
+
+                displayTitle: true,
+                hasmanyConf: {
+                    fields: [
+                        'id',
+                        'nome',
+                        'resource',
+                        'status'
+                    ],
+                    fieldsConfig: {
+                        resource: {
+                            type: 'w-upload-ajax',
+                            //extensions : ['csv','xls'],
+                            maxFileSize: '2M',
+                            ajaxFields: {
+                                field: 'attachments|resource',
+                                //resource_type : 'attachment'
+                            },
+                            modelName: <MODELNAME>,//'pagina',
+                            previewConf: {
+                                iconSize: 'fa-3x'
+                            },
+                            label: ''
+                        },
+                        status: {
+                            type: 'w-hidden',
+                        },
+                        id: {
+                            type: 'w-hidden',
+                        },
+                        nome: {
+                            type: 'w-input',
+                            inputType: 'text',
+                        },
+                    }
+                }

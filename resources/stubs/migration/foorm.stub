@@ -53,7 +53,7 @@ return [
         'fields' => {{$fieldsSearch}},
     ],
     'list' => [
-
+        'basic_query_fields' => ['id'],
         'dependencies' => [
             'search' => 'search',
         ],

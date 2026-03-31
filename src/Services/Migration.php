@@ -298,6 +298,8 @@ class Migration
         $columns_for_default_order_direction = Arr::get($this->modelValues, 'columns_for_default_order_direction', []);
         $columns_for_autocomplete = Arr::get($this->modelValues, 'columns_for_autocomplete', []);
 
+        $hasFoto = (Arr::get($this->modelValues, 'hasFoto', 'no') == 'si') ? 1 : 0;
+        $hasAttachments = (Arr::get($this->modelValues, 'hasAttachments', 'no') == 'si') ? 1 : 0;
 
 //        $this->setApici($variables['columnsForSelectList']);
 
@@ -324,6 +326,8 @@ class Migration
 
         $variables['relationsData'] = $this->getRelationsDataString($relation_names, $relation_types, $relation_models,
             $relation_tables, $relation_foreignkey, $relation_otherkey, $relation_pivotkey);
+        $variables['relationFoto'] = $hasFoto ? "'fotos' => [self::MORPH_MANY, 'related' => Foto::class, 'name' => 'mediable']," : '';
+        $variables['relationAttachments'] = $hasAttachments ? "'attachments' => [self::MORPH_MANY, 'related' => Attachment::class, 'name' => 'mediable']," : '';
 
 
         $variables['timestamps'] = $this->timestamps ? 'true' : 'false';
@@ -470,6 +474,9 @@ class Migration
         Log::info(print_r($migrationValues, true));
         Log::info(print_r($modelValues, true));
 
+        $hasFoto = (Arr::get($this->modelValues,'hasFoto','no') == 'si') ? 1 : 0;
+        $hasAttachments = (Arr::get($this->modelValues,'hasAttachments','no') == 'si') ? 1 : 0;
+
         $campi = Arr::get($migrationValues, 'campi', []);
         unset($campi['timestamps']);
         unset($campi['ownerships']);
@@ -542,6 +549,57 @@ class Migration
                 'savetype' => [
 
                 ],
+            ];
+        }
+
+        if ($hasFoto) {
+            $relazioniFinaliList['fotos'] = [
+                'fields' => [
+                    'id' => [],
+                    'nome' => [],
+                    'descrizione' => [],
+                    'resource' => []
+                ]
+            ];
+            $relazioniFinaliEdit['fotos'] = [
+                'fields' => [
+                    'id' => [],
+                    'nome' => [],
+                    'descrizione' => [],
+                    'resource' => [],
+                ],
+                //'saveType' => 'add',
+                'orderKey' => 'ordine',
+
+                'beforeNewCallbackMethods' => ['setFieldsFromResource'],
+                'beforeUpdateCallbackMethods' => ['setFieldsFromResource'],
+                'afterNewCallbackMethods' => ['filesOps'],
+                'afterUpdateCallbackMethods' => ['filesOps'],
+            ];
+        }
+        if ($hasAttachments) {
+            $relazioniFinaliList['attachments'] = [
+                'fields' => [
+                    'id' => [],
+                    'nome' => [],
+                    'descrizione' => [],
+                    'resource' => []
+                ]
+            ];
+            $relazioniFinaliEdit['attachments'] = [
+                'fields' => [
+                    'id' => [],
+                    'nome' => [],
+                    'descrizione' => [],
+                    'resource' => [],
+                ],
+                //'saveType' => 'add',
+                'orderKey' => 'ordine',
+
+                'beforeNewCallbackMethods' => ['setFieldsFromResource'],
+                'beforeUpdateCallbackMethods' => ['setFieldsFromResource'],
+                'afterNewCallbackMethods' => ['filesOps'],
+                'afterUpdateCallbackMethods' => ['filesOps'],
             ];
         }
 
@@ -686,6 +744,18 @@ class Migration
         $searchValues = Arr::get($this->modelsConfsValues, 'search', []);
         $listValues = Arr::get($this->modelsConfsValues, 'list', []);
         $editValues = Arr::get($this->modelsConfsValues, 'edit', []);
+
+        if (Arr::get($this->modelValues,'hasFoto') == 'si') {
+            $editValues['nome'][] = 'fotos';
+            $editValues['type'][] = 'fotosEdit';
+            $listValues['nome'][] = 'fotos';
+            $listValues['type'][] = 'images';
+            $listValues['order'][] = 'no';
+        }
+        if (Arr::get($this->modelValues,'hasAttachments') == 'si') {
+            $editValues['nome'][] = 'attachments';
+            $editValues['type'][] = 'attachmentsEdit';
+        }
 
         $variables['searchFields'] = $this->implodeArrayJsFields($searchValues['nome']);
         $variables['searchOperators'] = $this->implodeArrayJsOperators($searchValues['nome'],
